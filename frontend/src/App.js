@@ -5,51 +5,55 @@ import { Layout, Menu, Breadcrumb, BackTop, List } from 'antd';
 import SearchBar from './SearchBar';
 import HomePage from './HomePage';
 import RankingPage from './RankingPage';
+import MoviePage from './MoviePage';
+import contractAddress from './contractAddress';
 
 const { Header, Content, Footer } = Layout;
-
-
 
 function App() {
 
   const [loading, setLoading] = useState(false);
   const [deployState, setDeployState] = useState("Deploy");
-  const [contractAddress, setContractAddress] = useState(null);
+  // const [contractAddress, setContractAddress] = useState(contractAddress);
+  // const [contractAddress, setContractAddress] = useState(null);
+  
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieIndex, setMovieIndex] = useState();
   const [rating, setRating] = useState(0);
   const [ratingSum, setRatingSum] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
   const [aveRating, setAveRating] = useState(0);
+  const [curTab, setCurTab] = useState("1"); // 1-home, 2-ranking
   
   const onSearch = value => console.log(value);
 
-  async function deployContract() {
-    setLoading(true);
-    setErrorMsg(null);
-    setDeployState("Deploying...")
-    try {
-      const res = await fetch('/api/contract', {
-        method: 'POST',
-        body: JSON.stringify({}),
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const {contractAddress : addr, error} = await res.json();
-      if (!res.ok) {
-        setErrorMsg(error)
-        setDeployState("Error! - Retry Deploy");
-      } else {
-        setContractAddress(addr);
-        setDeployState("Redeploy");
-      }
-    } catch (err) {
-      setErrorMsg(err.stack)
-      setDeployState("Error! - Retry Deploy");
-    }
-    setLoading(false);
-  }
+  // async function deployContract() {
+  //   setLoading(true);
+  //   setErrorMsg(null);
+  //   setDeployState("Deploying...")
+  //   try {
+  //     const res = await fetch('/api/contract', {
+  //       method: 'POST',
+  //       body: JSON.stringify({}),
+  //       headers: { 'Content-Type': 'application/json' }
+  //     });
+  //     const {contractAddress : addr, error} = await res.json();
+  //     if (!res.ok) {
+  //       setErrorMsg(error)
+  //       setDeployState("Error! - Retry Deploy");
+  //     } else {
+  //       setContractAddress(addr);
+  //       setDeployState("Redeploy");
+  //     }
+  //   } catch (err) {
+  //     setErrorMsg(err.stack)
+  //     setDeployState("Error! - Retry Deploy");
+  //   }
+  //   setLoading(false);
+  // }
 
   // rate movie
+  
   async function setContractValue() {
     setLoading(true);
     setErrorMsg(null);
@@ -99,19 +103,35 @@ function App() {
 
   function onSelectMovie(event) {
     setMovieIndex(event.target.value);
-  }
+  };
   function onRate(event){
     setRating(event.target.value);
-  }
+  };
 
+  function onClickMenu(event) {
+      setCurTab(event.key);
+  };
+
+  function renderTab() {
+    switch (curTab) {
+      case "1":
+        return <HomePage contract={contractAddress}/>;
+      case "2":
+        return <RankingPage contract={contractAddress}/>;
+      case "3":
+        return <MoviePage contract={contractAddress} movieIndex={movieIndex}/>;
+      default:
+        return <HomePage contract={contractAddress}/>;
+    }
+  }
 
   return (
     <div className="App">
       <Layout className="layout">
         <Header>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-            <Menu.Item key="1">Menu</Menu.Item>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} onClick={onClickMenu}>
+            <Menu.Item key="1">Home</Menu.Item>
             <Menu.Item key="2">Ranking</Menu.Item>
             <Menu.Item key="3">User</Menu.Item>
             <Menu.Item key="4">
@@ -127,8 +147,9 @@ function App() {
             <Breadcrumb.Item>App</Breadcrumb.Item>
           </Breadcrumb>
           <div className="site-layout-content">
-            <HomePage />
-            <RankingPage contract={contractAddress}/>
+            {renderTab()}
+            {/* <HomePage />
+            <RankingPage contract={contractAddress}/> */}
           </div>
         </Content>
 
@@ -137,14 +158,14 @@ function App() {
       </Layout>
       
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" aria-busy={loading}/>        
+        {/* <img src={logo} className="App-logo" alt="logo" aria-busy={loading}/>        
         <p>
           <button type="button" className="App-button" disabled={loading} onClick={deployContract}>{deployState} Contract</button>
         </p>
         { contractAddress && <p>
           Contract Address: {contractAddress}
-        </p>}
-        <p>
+        </p>} */}
+        {/* <p>
           <input className="App-input" disabled={loading || !contractAddress} onChange={onSelectMovie}/>
           <button type="button" className="App-button" disabled={loading || !contractAddress || !movieIndex} onClick={getContractValue}>Select Movie</button>
           <p>{`Ave Rating: ${aveRating}`}</p>
@@ -154,7 +175,7 @@ function App() {
         <p>
           <input className="App-input" disabled={loading || !contractAddress} onChange={onRate}/>
           <button type="button" className="App-button" disabled={loading || !contractAddress} onClick={setContractValue}>Rate</button>
-        </p>
+        </p> */}
         { errorMsg && <pre class="App-error">
           Error: {errorMsg}
         </pre>}

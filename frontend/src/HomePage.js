@@ -31,7 +31,7 @@ const ori_data = [
 const count = 6;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}`;
 
-function HomePage () {
+function HomePage (props) {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -75,6 +75,12 @@ function HomePage () {
     }
     setLoading(false);
   }
+
+  function onClickCard() {
+    getData();
+  }
+
+
 
   // getData = callback => {
   //   reqwest({
@@ -130,20 +136,20 @@ function HomePage () {
           xxl: 6,
         }}
         dataSource={data}
-        renderItem={item => (
+        renderItem={(item, i) => (
           <List.Item>
-            <BoxCard />
+            <BoxCard key={i} onClick={onClickCard}/>
           </List.Item>
         )}
       />
-      <Card
+      {/* <Card
         hoverable
         style={{ width: 240 }}
         cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
       >
         <Meta title="Europe Street beat" description="www.instagram.com" />
         <Rate allowHalf defaultValue={0} />
-      </Card>
+      </Card> */}
       {/* <Button onClick={onLoadMore}>Loading More</Button> */}
     </div>
   );
