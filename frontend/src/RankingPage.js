@@ -22,6 +22,7 @@ function RankingPage (props) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieList, setMovieList] = useState([]);
+  const [seletedSorting, setSeletedSorting] = useState("Sorted By");
 
   const menu = (
     <Menu onClick={handleMenuClick}>
@@ -42,21 +43,24 @@ function RankingPage (props) {
   const sortByPopularity = (a, b) => b[2] - a[2];
 
   function handleMenuClick(e) {
-    message.info('Click on menu item.');
+    // message.info('Click on menu item.');
     console.log("key: ", e.key);
     let list = movieList;
     console.log(list);
-    if (e.key == "1") {
+    if (e.key === "1") {
       list.sort(sortByRating);
       setMovieList(list);
-    } if (e.key == "2") {
+      setSeletedSorting("By Rating");
+    } if (e.key === "2") {
       list.sort(sortByPopularity);
       console.log('pop', list)
       setMovieList(list);
+      setSeletedSorting("By Popularity");
       console.log('state:', list);
-    } else {
+    } if (e.key === "3") {
       list.sort(sortByDate);
       setMovieList(list);
+      setSeletedSorting("By Date");
     }
   }
 
@@ -109,7 +113,7 @@ function RankingPage (props) {
       <button type="button" className="App-button" onClick={getMovieList}>get all</button>
       <Dropdown overlay={menu}>
         <Button>
-          Sorted by <DownOutlined />
+          {seletedSorting || "Sorted by"} <DownOutlined />
         </Button>
       </Dropdown>
       <List
