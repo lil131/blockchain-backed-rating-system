@@ -64,7 +64,10 @@ function App() {
       const {error} = await res.json();
       if (!res.ok) {
         setErrorMsg(error)
+      } else {
+        getContractValue();
       }
+
     } catch(err) {
       setErrorMsg(err.stack)
     }
@@ -77,12 +80,12 @@ function App() {
     setErrorMsg(null);
     try {
       const res = await fetch(`/api/contract/${contractAddress}/get/${movieIndex}`);
-      const {ratingsum, ratingcount, averating, error} = await res.json();
+      const {ratingsum, ratingcount, error} = await res.json();
       console.log("client movieIndex: ", movieIndex);
       if (!res.ok) {
         setErrorMsg(error);
       } else {
-        setAveRating(averating);
+        setAveRating(Math.round(ratingsum/ratingcount*10)/10);
         setRatingSum(ratingsum);
         setRatingCount(ratingcount);
         console.log(ratingsum, ratingcount);

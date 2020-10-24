@@ -6,7 +6,7 @@ contract moviestorage {
     uint movie_index;
     uint rating_sum;
     uint rating_count;
-    uint ave_rating;
+    // uint ave_rating;
     // uint[] rated_users; // user index
     // uint[] user_ratings;
     // mapping (string => uint) voted;
@@ -28,7 +28,7 @@ contract moviestorage {
 
 
    function addMovie (uint sum, uint count) private {
-    movies[movieCount++] = Movie(movieCount, sum, count, sum/count);
+    movies[movieCount++] = Movie(movieCount, sum, count);
   }
 //   function addMovie (uint ratingSum, uint ratingCount, uint[] memory ratedUser, uint[] memory userRatings) private {
 //     movies[movieCount++] = Movie(movieCount, ratingSum, ratingCount, ratingSum/ratingCount, ratedUser, userRatings);
@@ -49,14 +49,12 @@ contract moviestorage {
     Movie memory m = movies[movie_index];
     ratingcount = m.rating_count;
     ratingsum = m.rating_sum;
-    averating = m.ave_rating;
     return (ratingsum, ratingcount, averating);
   }
   
    function rateMovie(uint rating, uint movie_index) public {
     movies[movie_index].rating_count += 1;
     movies[movie_index].rating_sum += rating;
-    movies[movie_index].ave_rating = movies[movie_index].rating_sum / movies[movie_index].rating_count;
   }
 
 //   function rateMovie(uint user_index, uint rating, uint movie_index) public {
