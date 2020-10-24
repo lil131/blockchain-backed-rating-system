@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Layout, Menu, Breadcrumb, BackTop } from 'antd';
+import SearchBar from './SearchBar';
+import HomePage from './HomePage';
+import RankingPage from './RankingPage';
+
+const { Header, Content, Footer } = Layout;
+
+
 
 function App() {
 
@@ -8,8 +16,11 @@ function App() {
   const [deployState, setDeployState] = useState("Deploy");
   const [contractAddress, setContractAddress] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [desiredValue, setDesiredValue] = useState('test');
-  const [value, setValue] = useState("Get Value");
+  const [movieIndex, setMovieIndex] = useState();
+  const [rating, setRating] = useState(0);
+  const [ratingSum, setRatingSum] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
+  const onSearch = value => console.log(value);
 
   async function deployContract() {
     setLoading(true);
@@ -36,6 +47,7 @@ function App() {
     setLoading(false);
   }
 
+  // rate movie
   async function setContractValue() {
     setLoading(true);
     setErrorMsg(null);
@@ -44,7 +56,8 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          x: desiredValue
+          movie_index: movieIndex,
+          rating: rating
         })
       });
       const {error} = await res.json();
@@ -57,16 +70,21 @@ function App() {
     setLoading(false);
   }
 
+  // get movie
   async function getContractValue() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/contract/${contractAddress}/value`);
-      const {x, error} = await res.json();
+      const res = await fetch(`/api/contract/${contractAddress}/get/${movieIndex}`);
+      const {ratingsum, ratingcount, rating, error} = await res.json();
+      console.log("client x: ", movieIndex);
       if (!res.ok) {
         setErrorMsg(error);
       } else {
-        setValue(x);
+        setRating(rating);
+        setRatingSum(ratingsum);
+        setRatingCount(ratingcount);
+        console.log(ratingsum, ratingcount);
       }
     } catch(err) {
       setErrorMsg(err.stack)
@@ -74,12 +92,45 @@ function App() {
     setLoading(false);
   }
 
-  function handleChange(event) {
-    setDesiredValue(event.target.value);
+  function onSelectMovie(event) {
+    setMovieIndex(event.target.value);
   }
+  function onRate(event){
+    setRating(event.target.value);
+  }
+
 
   return (
     <div className="App">
+      <Layout className="layout">
+        <Header>
+          <div className="logo" />
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+            <Menu.Item key="1">Menu</Menu.Item>
+            <Menu.Item key="2">Ranking</Menu.Item>
+            <Menu.Item key="3">User</Menu.Item>
+            <Menu.Item key="4">
+            <SearchBar />
+            </Menu.Item>
+          </Menu>
+        </Header>
+
+        <Content style={{ padding: '0 50px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="site-layout-content">
+            <HomePage />
+            <RankingPage />
+          </div>
+        </Content>
+
+        <Footer style={{ textAlign: 'center' }}>Kaleido Development Challenge ©2020 Created by LLL</Footer>
+        <BackTop />
+      </Layout>
+      
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" aria-busy={loading}/>        
         <p>
@@ -89,16 +140,20 @@ function App() {
           Contract Address: {contractAddress}
         </p>}
         <p>
-          <input className="App-input" disabled={loading || !contractAddress} onChange={handleChange}/>
-          <button type="button" className="App-button" disabled={loading || !contractAddress || !desiredValue} onClick={setContractValue}>Set Value</button>
+          <input className="App-input" disabled={loading || !contractAddress} onChange={onSelectMovie}/>
+          <button type="button" className="App-button" disabled={loading || !contractAddress || !movieIndex} onClick={getContractValue}>Select Movie</button>
+          <p>{`Rating Sum: ${ratingSum}`}</p>
+          <p>{`Rating Count: ${ratingCount}`}</p>
         </p>
         <p>
-          <button type="button" className="App-button" disabled={loading || !contractAddress} onClick={getContractValue}>{value}</button>
+          <input className="App-input" disabled={loading || !contractAddress} onChange={onRate}/>
+          <button type="button" className="App-button" disabled={loading || !contractAddress} onClick={setContractValue}>Rate</button>
         </p>
         { errorMsg && <pre class="App-error">
           Error: {errorMsg}
         </pre>}
       </header>
+      
     </div>
   );
 }

@@ -16,8 +16,12 @@ contract simplestorage {
       * @dev Set the value
       * @param x The new value
       */
-    function set(string memory x) public {
-        _x = x;
+    // function set(string memory x) public {
+    //     _x = x;
+    // }
+    function set(string memory x) public returns (string memory ans) {
+      _x = x;
+      ans = x;
     }
     /**
       * @dev Get the value
