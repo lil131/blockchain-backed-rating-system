@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Layout, Menu, Breadcrumb, BackTop } from 'antd';
+import { Layout, Menu, Breadcrumb, BackTop, List } from 'antd';
 import SearchBar from './SearchBar';
 import HomePage from './HomePage';
 import RankingPage from './RankingPage';
@@ -21,6 +21,7 @@ function App() {
   const [ratingSum, setRatingSum] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
   const [aveRating, setAveRating] = useState(0);
+  
   const onSearch = value => console.log(value);
 
   async function deployContract() {
@@ -127,7 +128,7 @@ function App() {
           </Breadcrumb>
           <div className="site-layout-content">
             <HomePage />
-            <RankingPage />
+            <RankingPage contract={contractAddress}/>
           </div>
         </Content>
 

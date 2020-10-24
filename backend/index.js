@@ -102,8 +102,25 @@ app.get('/api/contract/:address/get/:movie_index', async (req, res) => {
     });
     console.log("req.params.movie_index: ", req.params.movie_index)
     res.status(200).send(postRes.body)
-    console.log(postRes.body)
-    console.log('res: ', res.body)
+    console.log(postRes.body) // intended
+    console.log('res: ', res.body) // undefined
+  }
+  catch(err) {
+    res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
+  }
+});
+
+// get movie list
+app.get('/api/contract/:address/getlist', async (req, res) => {
+  try {
+    console.log(req.params.movie_index);
+    let postRes = await swaggerClient.apis.default.getMovieList_get({
+      address: req.params.address,
+      "kld-from": FROM_ADDRESS,
+      "kld-sync": "true"
+    });
+    res.status(200).send(postRes.body)
+    console.log(`postRes.body: ${postRes.body.rows}`);
   }
   catch(err) {
     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});

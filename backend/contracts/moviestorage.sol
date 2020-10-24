@@ -52,10 +52,21 @@ contract moviestorage {
     return (ratingsum, ratingcount, averating);
   }
   
-   function rateMovie(uint rating, uint movie_index) public {
+  function rateMovie(uint rating, uint movie_index) public {
     movies[movie_index].rating_count += 1;
     movies[movie_index].rating_sum += rating;
   }
+
+  function getMovieList() public view 
+  returns (uint256[30] memory movieindices, uint256[30] memory ratingsums, uint256[30] memory ratingcounts)
+  {
+      for (uint i = 0; i <= movieCount; i++ ) {
+          movieindices[i] = movies[i].movie_index;
+          ratingsums[i] = movies[i].rating_sum;
+          ratingcounts[i] = movies[i].rating_count;
+      }
+  }
+
 
 //   function rateMovie(uint user_index, uint rating, uint movie_index) public {
 //     Movie storage m = movies[movie_index];
