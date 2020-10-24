@@ -96,9 +96,7 @@ app.get('/api/contract/:address/get/:movie_index', async (req, res) => {
     console.log(req.params.movie_index)
     let postRes = await swaggerClient.apis.default.getMovie_get({
       address: req.params.address,
-      body: {
-        movie_index: req.params.movie_index
-      },
+      movie_index: req.params.movie_index,
       "kld-from": FROM_ADDRESS,
       "kld-sync": "true"
     });

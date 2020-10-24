@@ -20,6 +20,7 @@ function App() {
   const [rating, setRating] = useState(0);
   const [ratingSum, setRatingSum] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
+  const [aveRating, setAveRating] = useState(0);
   const onSearch = value => console.log(value);
 
   async function deployContract() {
@@ -76,12 +77,12 @@ function App() {
     setErrorMsg(null);
     try {
       const res = await fetch(`/api/contract/${contractAddress}/get/${movieIndex}`);
-      const {ratingsum, ratingcount, rating, error} = await res.json();
-      console.log("client x: ", movieIndex);
+      const {ratingsum, ratingcount, averating, error} = await res.json();
+      console.log("client movieIndex: ", movieIndex);
       if (!res.ok) {
         setErrorMsg(error);
       } else {
-        setRating(rating);
+        setAveRating(averating);
         setRatingSum(ratingsum);
         setRatingCount(ratingcount);
         console.log(ratingsum, ratingcount);
@@ -142,6 +143,7 @@ function App() {
         <p>
           <input className="App-input" disabled={loading || !contractAddress} onChange={onSelectMovie}/>
           <button type="button" className="App-button" disabled={loading || !contractAddress || !movieIndex} onClick={getContractValue}>Select Movie</button>
+          <p>{`Ave Rating: ${aveRating}`}</p>
           <p>{`Rating Sum: ${ratingSum}`}</p>
           <p>{`Rating Count: ${ratingCount}`}</p>
         </p>

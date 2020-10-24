@@ -6,7 +6,7 @@ contract moviestorage {
     uint movie_index;
     uint rating_sum;
     uint rating_count;
-    uint cur_rating;
+    uint ave_rating;
     // uint[] rated_users; // user index
     // uint[] user_ratings;
     // mapping (string => uint) voted;
@@ -38,25 +38,25 @@ contract moviestorage {
 //   returns (uint[] memory ratingsum, uint ratingcount, uint rating, uint[] memory ratedusers, uint[] memory ratings) {
 //     Movie memory m = movies[movie_index];
 //     ratingcount = m.rating_count;
-//     rating = m.cur_rating;
+//     rating = av;
 //     ratedusers = m.rated_users;
 //     ratings = m.user_ratings;
 //     return (ratingsum, ratingcount, rating, ratedusers, ratings);
 //   }
 
   function getMovie(uint movie_index) public view 
-  returns (uint ratingsum, uint ratingcount, uint rating) {
+  returns (uint ratingsum, uint ratingcount, uint averating) {
     Movie memory m = movies[movie_index];
     ratingcount = m.rating_count;
     ratingsum = m.rating_sum;
-    rating = m.cur_rating;
-    return (ratingsum, ratingcount, rating);
+    averating = m.ave_rating;
+    return (ratingsum, ratingcount, averating);
   }
   
    function rateMovie(uint rating, uint movie_index) public {
     movies[movie_index].rating_count += 1;
     movies[movie_index].rating_sum += rating;
-    movies[movie_index].cur_rating = movies[movie_index].rating_sum / movies[movie_index].rating_count;
+    movies[movie_index].ave_rating = movies[movie_index].rating_sum / movies[movie_index].rating_count;
   }
 
 //   function rateMovie(uint user_index, uint rating, uint movie_index) public {
@@ -65,7 +65,7 @@ contract moviestorage {
 //     m.rated_users.push(user_index);
 //     m.rating_count += 1;
 //     m.rating_sum += rating;
-//     m.cur_rating = m.rating_sum / m.rating_count;
+//     av = m.rating_sum / m.rating_count;
 //   }
 
 //   function rateMovie(uint user_index, uint rating, uint movie_index) public 
@@ -76,9 +76,9 @@ contract moviestorage {
 //     m.rated_users.push(user_index);
 //     m.rating_count += 1;
 //     m.rating_sum += rating;
-//     m.cur_rating = m.rating_sum / m.rating_count;
+//     av = m.rating_sum / m.rating_count;
 
-//     new_rating = m.cur_rating;
+//     new_rating = av;
 //   }
 
 }
