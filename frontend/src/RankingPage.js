@@ -143,7 +143,6 @@ function RankingPage (props) {
                   alt="logo"
                   src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
                 />
-                <p>index: {item[0]}</p>
               </div>
             }
           >
@@ -152,7 +151,7 @@ function RankingPage (props) {
             title={<a href={item.href}>{item.title}</a>}
             description={item.description}
             />
-            {item.content}
+            {`index: ${item[0]}`}
           </List.Item>
         )}
       />
