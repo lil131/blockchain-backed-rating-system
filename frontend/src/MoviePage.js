@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { message, Rate } from 'antd';
 import { StarTwoTone } from '@ant-design/icons';
 
-import contract from './contractAddress';
 import './MoviePage.css'
 
 const userIndex = 4;

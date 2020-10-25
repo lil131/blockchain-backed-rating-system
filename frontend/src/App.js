@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import { Layout, Menu, BackTop } from 'antd';
 
-import SearchBar from './SearchBar';
 import RankingPage from './RankingPage';
-import contractAddress from './contractAddress';
 
 import './App.css';
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  
-  const onSearch = value => console.log(value);
-
 
   return (
     <div className="App">
@@ -21,7 +16,6 @@ function App() {
           <div className="logo" />
           <Menu theme="dark" mode="horizontal" >
             <Menu.Item key="1">Logo</Menu.Item>
-            <Menu.Item key="2"><SearchBar /></Menu.Item>
           </Menu>
         </Header>
 

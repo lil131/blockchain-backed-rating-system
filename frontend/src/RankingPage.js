@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { List, Dropdown, Button, Menu, Drawer } from 'antd';
-import { DownOutlined, FallOutlined } from '@ant-design/icons';
-
+import { List, Dropdown, Button, Menu, Drawer, Input } from 'antd';
+import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
 
-import contract from './contractAddress';
 import moviedata from './MovieData.json';
-import './App.css';
+import './RankingPage.css';
+
+const { Search } = Input;
 
 const sortMethods = [
   {name: 'Rating', fun: (a, b) => b.rating - a.rating},
@@ -16,12 +16,13 @@ const sortMethods = [
   {name: 'Date', fun: (a, b) => b.year - a.year}
 ]
 
-function RankingPage (props) {
+function RankingPage () {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieList, setMovieList] = useState([]); // list for sorting
   const [seletedSorting, setSeletedSorting] = useState(0);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [search, setSearch] = useState(null);
 
   // get movies when component mounted 
   useEffect(() => {
@@ -31,12 +32,11 @@ function RankingPage (props) {
     }
   }, []);
 
-
   function handleMenuClick(e) {
     setSeletedSorting(e.key);
     movieList.sort(sortMethods[e.key].fun)
     setMovieList([...movieList])
-  }
+  };
 
   // get movie list
   async function getMovieList() {
@@ -76,7 +76,7 @@ function RankingPage (props) {
   // drawer
   function onClickCard(item) {
     setSelectedMovie(item);
-  }
+  };
 
   // close and reset selectedMovie
   function onCloseDrawer(){
@@ -86,7 +86,11 @@ function RankingPage (props) {
   function updateMovie(movie) {
     const newList = movieList.map((m, i) => m.index === movie.index ? movie : m);
     setMovieList(newList);
-  }
+  };
+
+  const onSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
@@ -102,14 +106,22 @@ function RankingPage (props) {
     </Menu>
   );
 
+  let renderList = movieList;
+  if (search) {
+    renderList = movieList.filter(m => m.title.toLowerCase().includes(search.toLowerCase()));
+  }
+
   return(
     <div className="movie-list-content">
       <div className="ranking-layout-content">
-        <Dropdown overlay={menu}>
-          <Button>
-            Sort by {sortMethods[seletedSorting].name} <DownOutlined />
-          </Button>
-        </Dropdown>
+        <div className="top-bar">
+          <Input size="large" placeholder="input movie title" onChange={onSearch} prefix={<SearchOutlined />} />
+          <Dropdown overlay={menu}>
+            <Button>
+              Sort by {sortMethods[seletedSorting].name} <DownOutlined />
+            </Button>
+          </Dropdown>
+        </div> 
         {loading ? <ListOnLoading/> :
           <List
             grid={{
@@ -121,7 +133,7 @@ function RankingPage (props) {
               xl: 5,
               xxl: 6,
             }}
-            dataSource={movieList}
+            dataSource={renderList}
             renderItem={item => (
               <List.Item>
                 <div key={item.index} onClick={() => onClickCard(item)}>
