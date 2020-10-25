@@ -20,10 +20,10 @@ function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieIndex, setMovieIndex] = useState();
   const [rating, setRating] = useState(0);
+  const [curTab, setCurTab] = useState("1"); // 1-home, 2-ranking
   const [ratingSum, setRatingSum] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
   const [aveRating, setAveRating] = useState(0);
-  const [curTab, setCurTab] = useState("1"); // 1-home, 2-ranking
   
   const onSearch = value => console.log(value);
 
@@ -112,44 +112,26 @@ function App() {
       setCurTab(event.key);
   };
 
-  function renderTab() {
-    switch (curTab) {
-      case "1":
-        return <HomePage contract={contractAddress}/>;
-      case "2":
-        return <RankingPage contract={contractAddress}/>;
-      case "3":
-        return <MoviePage contract={contractAddress} movieIndex={movieIndex}/>;
-      default:
-        return <HomePage contract={contractAddress}/>;
-    }
-  }
-
   return (
     <div className="App">
       <Layout className="layout">
         <Header>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} onClick={onClickMenu}>
-            <Menu.Item key="1">Home</Menu.Item>
-            <Menu.Item key="2">Ranking</Menu.Item>
-            <Menu.Item key="3">User</Menu.Item>
-            <Menu.Item key="4">
-            <SearchBar />
-            </Menu.Item>
+          <Menu theme="dark" mode="horizontal" onClick={onClickMenu}>
+            <Menu.Item key="1">Logo</Menu.Item>
+            {/* <Menu.Item key="2">Ranking</Menu.Item> */}
+            <Menu.Item key="2"><SearchBar /></Menu.Item>
           </Menu>
         </Header>
 
         <Content style={{ padding: '0 50px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+          {/* <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>List</Breadcrumb.Item>
             <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+          </Breadcrumb> */}
           <div className="site-layout-content">
-            {renderTab()}
-            {/* <HomePage />
-            <RankingPage contract={contractAddress}/> */}
+          <RankingPage />
           </div>
         </Content>
 
@@ -157,7 +139,7 @@ function App() {
         <BackTop />
       </Layout>
       
-      <header className="App-header">
+      {/* <header className="App-header"> */}
         {/* <img src={logo} className="App-logo" alt="logo" aria-busy={loading}/>        
         <p>
           <button type="button" className="App-button" disabled={loading} onClick={deployContract}>{deployState} Contract</button>
@@ -175,11 +157,11 @@ function App() {
         <p>
           <input className="App-input" disabled={loading || !contractAddress} onChange={onRate}/>
           <button type="button" className="App-button" disabled={loading || !contractAddress} onClick={setContractValue}>Rate</button>
-        </p> */}
+        </p> 
         { errorMsg && <pre class="App-error">
           Error: {errorMsg}
         </pre>}
-      </header>
+      </header> */}
       
     </div>
   );

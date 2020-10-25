@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { message, Card, Rate, List, Button } from 'antd';
 import './MoviePage.css'
+import contract from './contractAddress';
 
 const movieIndex = 1; 
 
 function MoviePage(props) {
-  const contractAddress = props.contract;
-  const movieIndex = 1;
+  const movieIndex = props.movieIndex;
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -28,7 +28,7 @@ function MoviePage(props) {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/contract/${contractAddress}/get/${movieIndex}`);
+      const res = await fetch(`/api/contract/${contract}/get/${movieIndex}`);
       const {ratingsum, ratingcount, error} = await res.json();
       console.log("client movieIndex: ", movieIndex);
       if (!res.ok) {
@@ -52,7 +52,7 @@ function MoviePage(props) {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/contract/${contractAddress}/value`, {
+      const res = await fetch(`/api/contract/${contract}/value`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

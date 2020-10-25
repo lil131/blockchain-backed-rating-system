@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { List, Avatar, Space, Dropdown, Button, Menu, message, Rate } from 'antd';
+import { List, Avatar, Space, Dropdown, Button, Menu, message, Rate, Drawer } from 'antd';
 import { MessageOutlined, LikeOutlined, StarOutlined, DownOutlined, FallOutlined } from '@ant-design/icons';
+import contract from './contractAddress';
 import ListOnLoading from './ListOnLoading';
-import tempContract from './contractAddress';
+import MoviePage from './MoviePage';
+import BoxCard from './BoxCard';
 
-const contract = tempContract;
 const listData = [];
 
 for (let i = 0; i < 23; i++) {
@@ -27,11 +28,17 @@ function RankingPage (props) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieList, setMovieList] = useState([]);
   const [seletedSorting, setSeletedSorting] = useState("Sorted By");
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState();
+  const [ratingSum, setRatingSum] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
+  const [aveRating, setAveRating] = useState(0);
 
   const sortByRating = (a, b) => b[1] - a[1];
   const sortByDate = (a, b) => b[0] - a[0];
   const sortByPopularity = (a, b) => b[2] - a[2];
 
+  // get movies when component mounted 
   useEffect(()=>{
     if (movieList.length === 0) {
       console.log('geting list');
@@ -61,7 +68,7 @@ function RankingPage (props) {
     }
   }
 
-  // get movie list
+  // zip data
   const zip = (arr) => {
     let list = [];
     for (let i = 0; i < arr[0].length; i ++) {
@@ -76,7 +83,8 @@ function RankingPage (props) {
     return list;
   };
 
-  async function getMovieList(contract) {
+  // get movie list
+  async function getMovieList() {
     setLoading(true);
     setErrorMsg(null);
     try {
@@ -96,6 +104,38 @@ function RankingPage (props) {
       setErrorMsg(err.stack)
     }
     setLoading(false);
+  };
+
+  // get movie info by index
+  async function getMovieData(movieIndex) {
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch(`/api/contract/${contract}/get/${movieIndex}`);
+      const {ratingsum, ratingcount, error} = await res.json();
+      console.log("client movieIndex: ", movieIndex);
+      if (!res.ok) {
+        setErrorMsg(error);
+      } else {
+        setAveRating(Math.round(ratingsum/ratingcount*10)/10);
+        setRatingSum(ratingsum);
+        setRatingCount(ratingcount);
+        console.log(ratingsum, ratingcount);
+      }
+    } catch(err) {
+      setErrorMsg(err.stack)
+    }
+    setLoading(false);
+  }
+
+  function onClickCard(index) {
+    setSelectedMovie(index);
+    setDrawerVisibility(true);
+    getMovieData(index);
+  }
+
+  function onCloseDrawer(){
+    setDrawerVisibility(false);
   };
 
   const menu = (
@@ -120,58 +160,83 @@ function RankingPage (props) {
     );
 
   return(
-    <div className="ranking-layout-content">
-      <button type="button" className="App-button" onClick={getMovieList}>get all</button>
-      <Dropdown overlay={menu}>
-        <Button>
-          {seletedSorting || "Sorted by"} <DownOutlined />
-        </Button>
-      </Dropdown>
-      {loading ? <ListOnLoading/> :
-        <List
-          itemLayout="vertical"
-          size="large"
-          pagination={{
-            onChange: page => {
-              console.log(page);
-            },
-            pageSize: 3,
-          }}
-          dataSource={movieList}
-          footer={
-            <div>
-              <b>ant design</b> footer part
-            </div>
-          }
-          renderItem={item => (
-            <List.Item
-              key={item[0]}
-              actions={[
-                <Rate allowHalf disable defaultValue={Math.round(item[1]*10)/10} />, <p>{Math.round(item[1]*10)/10}</p>,
-                // <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-                // <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-                <IconText icon={MessageOutlined} text={item[2]} key="list-vertical-message" />,
-              ]}
-              extra={
-                <div>
-                  <img
-                    width={272}
-                    alt="logo"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                  />
-                </div>
-              }
-            >
-              <List.Item.Meta
-              avatar={<Avatar src={item.avatar} />}
-              title={<a href={item.href}>{item.title}</a>}
-              description={item.description}
-              />
-              {`index: ${item[0]}`}
-            </List.Item>
-          )}
-        />
-      }
+    <div className="movie-list-content">
+      <div className="ranking-layout-content">
+        <button type="button" className="App-button" onClick={getMovieList}>get all</button>
+        <Dropdown overlay={menu}>
+          <Button>
+            {seletedSorting || "Sorted by"} <DownOutlined />
+          </Button>
+        </Dropdown>
+        {loading ? <ListOnLoading/> :
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 3,
+              lg: 4,
+              xl: 5,
+              xxl: 6,
+            }}
+            dataSource={movieList}
+            renderItem={(item, i) => (
+              <List.Item>
+                <BoxCard key={item[0]} title={"title"} movieIndex={item[0]} movieRating={item[1]} onClick={()=>onClickCard(item.index)}/>
+              </List.Item>
+            )}
+          />
+          // <List
+          //   itemLayout="vertical"
+          //   size="large"
+          //   pagination={{
+          //     onChange: page => {
+          //       console.log(page);
+          //     },
+          //     pageSize: 3,
+          //   }}
+          //   dataSource={movieList}
+
+          //   renderItem={item => (
+          //     <List.Item
+          //       key={item[0]}
+          //       actions={[
+          //         <Rate allowHalf disable defaultValue={Math.round(item[1]*10)/10} />, <p>{Math.round(item[1]*10)/10}</p>,
+          //         // <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
+          //         // <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
+          //         <IconText icon={MessageOutlined} text={item[2]} key="list-vertical-message" />,
+          //       ]}
+          //       extra={
+          //         <div>
+          //           <img
+          //             width={272}
+          //             alt="logo"
+          //             src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+          //           />
+          //         </div>
+          //       }
+          //     >
+          //       <List.Item.Meta
+          //       avatar={<Avatar src={item.avatar} />}
+          //       title={<a href={item.href}>{item.title}</a>}
+          //       description={item.description}
+          //       />
+          //       {`index: ${item[0]}`}
+          //       <BoxCard key={item.index} title={item.title} movieIndex={item.index} onClick={()=>onClickCard(item.index)}/>
+          //     </List.Item>
+          //   )}
+          // />
+        }
+      </div>
+      <Drawer
+        title="Multi-level drawer"
+        width={600}
+        closable={false}
+        onClose={onCloseDrawer}
+        visible={drawerVisibility}
+      >
+        <MoviePage movieIndex={selectedMovie} aveRating={aveRating} ratingCount={ratingCount} ratingSum={ratingSum}/>
+      </Drawer>
     </div>
   );
 };
