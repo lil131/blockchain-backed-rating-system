@@ -27,15 +27,17 @@ function RankingPage (props) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [movieList, setMovieList] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [seletedSorting, setSeletedSorting] = useState("Sorted By");
-  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState();
-  const [ratingSum, setRatingSum] = useState(0);
-  const [ratingCount, setRatingCount] = useState(0);
-  const [aveRating, setAveRating] = useState(0);
+  const [aveRating, setAveRating] = useState();
+  const [ratingCount, setRatingCount] = useState();
+
 
   const sortByRating = (a, b) => b[1] - a[1];
   const sortByDate = (a, b) => b[0] - a[0];
+  const sortByIndex = (a, b) => b[0] - a[0];
   const sortByPopularity = (a, b) => b[2] - a[2];
 
   // get movies when component mounted 
@@ -71,15 +73,19 @@ function RankingPage (props) {
   // zip data
   const zip = (arr) => {
     let list = [];
+    let copy = [];
     for (let i = 0; i < arr[0].length; i ++) {
       if (i > 0 & arr[0][i] === 0) {
         break;
       } else {
-        let item = [arr[0][i], arr[2] === 0? 0: arr[1][i]/arr[2][i], arr[2][i]];
+        let item = [arr[0][i], arr[2] === 0? 0: arr[1][i]/arr[2][i], arr[2][i]]; // [index, aveRating, count]
         list.push(item);
+        copy.push(Array(...item));
       }
     }
-    console.log(`ziplist: ${list}`);
+    setMovies(copy);
+    console.log("ori.movies after:");
+    console.log(copy);
     return list;
   };
 
@@ -96,7 +102,6 @@ function RankingPage (props) {
       } else {
         var list = zip(raw);
         list.sort(sortByRating);
-        console.log(`sorted by rating: ${list}`);
         setMovieList(list);
       }
 
@@ -106,36 +111,20 @@ function RankingPage (props) {
     setLoading(false);
   };
 
-  // get movie info by index
-  async function getMovieData(movieIndex) {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const res = await fetch(`/api/contract/${contract}/get/${movieIndex}`);
-      const {ratingsum, ratingcount, error} = await res.json();
-      console.log("client movieIndex: ", movieIndex);
-      if (!res.ok) {
-        setErrorMsg(error);
-      } else {
-        setAveRating(Math.round(ratingsum/ratingcount*10)/10);
-        setRatingSum(ratingsum);
-        setRatingCount(ratingcount);
-        console.log(ratingsum, ratingcount);
-      }
-    } catch(err) {
-      setErrorMsg(err.stack)
-    }
-    setLoading(false);
-  }
-
+  // drawer
   function onClickCard(index) {
     setSelectedMovie(index);
-    setDrawerVisibility(true);
-    getMovieData(index);
+    setAveRating(movies[index][1]);
+    setRatingCount(movies[index][2]);
+    setDrawerVisible(true);
   }
 
+  // close and reset selectedMovie
   function onCloseDrawer(){
-    setDrawerVisibility(false);
+    setDrawerVisible(false);
+    setSelectedMovie();
+    setAveRating();
+    setRatingCount();
   };
 
   const menu = (
@@ -182,60 +171,25 @@ function RankingPage (props) {
             dataSource={movieList}
             renderItem={(item, i) => (
               <List.Item>
-                <BoxCard key={item[0]} title={"title"} movieIndex={item[0]} movieRating={item[1]} onClick={()=>onClickCard(item.index)}/>
+                <div key={item[0]} onClick={()=>onClickCard(item[0])}>
+                  <BoxCard key={item[0]} title={"title"} movieIndex={item[0]} movieRating={item[1]} />
+                </div>
               </List.Item>
             )}
           />
-          // <List
-          //   itemLayout="vertical"
-          //   size="large"
-          //   pagination={{
-          //     onChange: page => {
-          //       console.log(page);
-          //     },
-          //     pageSize: 3,
-          //   }}
-          //   dataSource={movieList}
-
-          //   renderItem={item => (
-          //     <List.Item
-          //       key={item[0]}
-          //       actions={[
-          //         <Rate allowHalf disable defaultValue={Math.round(item[1]*10)/10} />, <p>{Math.round(item[1]*10)/10}</p>,
-          //         // <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-          //         // <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-          //         <IconText icon={MessageOutlined} text={item[2]} key="list-vertical-message" />,
-          //       ]}
-          //       extra={
-          //         <div>
-          //           <img
-          //             width={272}
-          //             alt="logo"
-          //             src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-          //           />
-          //         </div>
-          //       }
-          //     >
-          //       <List.Item.Meta
-          //       avatar={<Avatar src={item.avatar} />}
-          //       title={<a href={item.href}>{item.title}</a>}
-          //       description={item.description}
-          //       />
-          //       {`index: ${item[0]}`}
-          //       <BoxCard key={item.index} title={item.title} movieIndex={item.index} onClick={()=>onClickCard(item.index)}/>
-          //     </List.Item>
-          //   )}
-          // />
         }
       </div>
       <Drawer
-        title="Multi-level drawer"
+        title="Title"
         width={600}
+        placement="right"
         closable={false}
         onClose={onCloseDrawer}
-        visible={drawerVisibility}
+        visible={drawerVisible}
       >
-        <MoviePage movieIndex={selectedMovie} aveRating={aveRating} ratingCount={ratingCount} ratingSum={ratingSum}/>
+        {selectedMovie === undefined ? <div/> :
+        <MoviePage movieIndex={selectedMovie} aveRating={aveRating} ratingCount={ratingCount} />
+        }
       </Drawer>
     </div>
   );

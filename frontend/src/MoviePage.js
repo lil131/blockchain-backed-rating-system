@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { message, Card, Rate, List, Button } from 'antd';
+import { StarTwoTone } from '@ant-design/icons';
 import './MoviePage.css'
 import contract from './contractAddress';
 
@@ -13,8 +14,8 @@ function MoviePage(props) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [rating, setRating] = useState(0);
   const [ratingSum, setRatingSum] = useState(0);
-  const [ratingCount, setRatingCount] = useState(0);
-  const [aveRating, setAveRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(props.ratingCount);
+  const [aveRating, setAveRating] = useState(props.aveRating);
 
 
   function onChangeRating(v) {
@@ -79,7 +80,8 @@ function MoviePage(props) {
   return (
     <div className="site-layout-background" style={{ padding: 44, minHeight: 380 }}>
       <div className="media">
-      <img></img>
+      <img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
+      <StarTwoTone /><b>{aveRating}</b>
         <div className="rating-div" >
           <Rate allowHalf defaultValue={rating} onChange={(v)=>onChangeRating(v)} allowClear={true}/>
           <p>{`Ave Rating: ${aveRating}`}</p>
