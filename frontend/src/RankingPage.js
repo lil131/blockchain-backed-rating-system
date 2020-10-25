@@ -10,75 +10,33 @@ import contract from './contractAddress';
 import moviedata from './MovieData.json';
 import './App.css';
 
+const sortMethods = [
+  {name: 'Rating', fun: (a, b) => b.rating - a.rating},
+  {name: 'Popularity', fun: (a, b) => b.count - a.count},
+  {name: 'Date', fun: (a, b) => b.year - a.year}
+]
 
 function RankingPage (props) {
-
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [movieList, setMovieList] = useState([]);
-  const [movies, setMovies] = useState([]);
-  const [seletedSorting, setSeletedSorting] = useState("Sorted By");
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState();
-  const [aveRating, setAveRating] = useState();
-  const [ratingCount, setRatingCount] = useState();
-
-  const data = moviedata;
-  
-
-  const sortByRating = (a, b) => b[1] - a[1];
-  const sortByDate = (a, b) => b[0] - a[0];
-  const sortByIndex = (a, b) => b[0] - a[0];
-  const sortByPopularity = (a, b) => b[2] - a[2];
+  const [movieList, setMovieList] = useState([]); // list for sorting
+  const [seletedSorting, setSeletedSorting] = useState(0);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   // get movies when component mounted 
-  useEffect(()=>{
+  useEffect(() => {
     if (movieList.length === 0) {
       console.log('geting list');
       getMovieList();
     }
   }, []);
 
-  function handleMenuClick(e) {
-    // message.info('Click on menu item.');
-    console.log("key: ", e.key);
-    let list = movieList;
-    console.log(list);
-    if (e.key === "1") {
-      list.sort(sortByRating);
-      setMovieList(list);
-      setSeletedSorting("By Rating");
-    } if (e.key === "2") {
-      list.sort(sortByPopularity);
-      console.log('pop', list)
-      setMovieList(list);
-      setSeletedSorting("By Popularity");
-      console.log('state:', list);
-    } if (e.key === "3") {
-      list.sort(sortByDate);
-      setMovieList(list);
-      setSeletedSorting("By Date");
-    }
-  }
 
-  // zip data
-  const zip = (arr) => {
-    let list = [];
-    let copy = [];
-    for (let i = 0; i < arr[0].length; i ++) {
-      if (i > 0 & arr[0][i] === 0) {
-        break;
-      } else {
-        let item = [arr[0][i], arr[2] === 0? 0: arr[1][i]/arr[2][i], arr[2][i]]; // [index, aveRating, count]
-        list.push(item);
-        copy.push(Array(...item));
-      }
-    }
-    setMovies(copy);
-    console.log("ori.movies after:");
-    console.log(copy);
-    return list;
-  };
+  function handleMenuClick(e) {
+    setSeletedSorting(e.key);
+    movieList.sort(sortMethods[e.key].fun)
+    setMovieList([...movieList])
+  }
 
   // get movie list
   async function getMovieList() {
@@ -86,14 +44,28 @@ function RankingPage (props) {
     setErrorMsg(null);
     try {
       const res = await fetch(`/api/contract/${contract}/getlist`);
-      const {raw, error} = await res.json();
+      const {raw: movieMeta, error} = await res.json();
 
       if (!res.ok) {
         setErrorMsg(error);
       } else {
-        var list = zip(raw);
-        list.sort(sortByRating);
+        const list = Object.keys(moviedata).map(k => moviedata[k]);
+        const totalRatings = movieMeta[1];
+        const counts = movieMeta[2];
+        totalRatings.forEach((r, i) => {
+          if (i < list.length) {
+            list[i].rating = counts[i] === 0 ? 0 : Math.round(r / counts[i] * 10) / 10;
+          }
+        });
+        counts.forEach((c, i) => {
+          if (i < list.length) {
+            list[i].count = c;
+          }
+        });
+        list.sort(sortMethods[seletedSorting].fun);
         setMovieList(list);
+    console.log(list)
+
       }
 
     } catch(err) {
@@ -103,49 +75,40 @@ function RankingPage (props) {
   };
 
   // drawer
-  function onClickCard(index) {
-    setSelectedMovie(index);
-    setAveRating(movies[index][1]);
-    setRatingCount(movies[index][2]);
-    setDrawerVisible(true);
+  function onClickCard(item) {
+    setSelectedMovie(item);
   }
 
   // close and reset selectedMovie
   function onCloseDrawer(){
-    setDrawerVisible(false);
-    setSelectedMovie();
-    setAveRating();
-    setRatingCount();
+    setSelectedMovie(null);
   };
+
+  function updateMovie(movie) {
+    const newList = movieList.map((m, i) => m.index === movie.index ? movie : m);
+    setMovieList(newList);
+  }
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1" icon={<FallOutlined />}>
+      <Menu.Item key={0} icon={<FallOutlined />}>
         rating
       </Menu.Item>
-      <Menu.Item key="2" icon={<FallOutlined />}>
+      <Menu.Item key={1} icon={<FallOutlined />}>
         polularity
       </Menu.Item>
-      <Menu.Item key="3" icon={<FallOutlined />}>
+      <Menu.Item key={2} icon={<FallOutlined />}>
         publish date
       </Menu.Item>
     </Menu>
   );
 
-  const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-      {text}
-    </Space>
-    );
-
   return(
     <div className="movie-list-content">
       <div className="ranking-layout-content">
-        <button type="button" className="App-button" onClick={getMovieList}>get all</button>
         <Dropdown overlay={menu}>
           <Button>
-            {seletedSorting || "Sorted by"} <DownOutlined />
+            Sort by {sortMethods[seletedSorting].name} <DownOutlined />
           </Button>
         </Dropdown>
         {loading ? <ListOnLoading/> :
@@ -160,10 +123,13 @@ function RankingPage (props) {
               xxl: 6,
             }}
             dataSource={movieList}
-            renderItem={(item, i) => (
+            renderItem={item => (
               <List.Item>
-                <div key={item[0]} onClick={()=>onClickCard(item[0])}>
-                  <BoxCard key={item[0]} title={"title"} movieIndex={item[0]} movieRating={item[1]} />
+                <div key={item.index} onClick={() => onClickCard(item)}>
+                  <BoxCard 
+                    key={item.index}
+                    movie={item}
+                  />
                 </div>
               </List.Item>
             )}
@@ -176,11 +142,9 @@ function RankingPage (props) {
         placement="right"
         closable={false}
         onClose={onCloseDrawer}
-        visible={drawerVisible}
+        visible={selectedMovie === null ? false : true}
       >
-        {selectedMovie === undefined ? <div/> :
-        <MoviePage movieIndex={selectedMovie} aveRating={aveRating} ratingCount={ratingCount} />
-        }
+        {selectedMovie !== null && <MoviePage movie={selectedMovie} updateMovie={updateMovie} />}
       </Drawer>
     </div>
   );

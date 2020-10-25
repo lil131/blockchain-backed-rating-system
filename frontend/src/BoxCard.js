@@ -2,15 +2,12 @@ import React from 'react';
 import { Card, Rate, Space } from 'antd';
 import { MessageOutlined } from '@ant-design/icons';
 
-import moviedata from './MovieData.json';
 import './App.css';
 
 const { Meta, Grid } = Card;
 
 function BoxCard(props) {
-  const movieInfo = moviedata[props.movieIndex];
-  console.log(movieInfo);
-  
+  const movie = props.movie;  
   const IconText = ({ icon, text }) => (
     <Space>
       {React.createElement(icon)}
@@ -23,15 +20,14 @@ function BoxCard(props) {
       hoverable
       style={{ width: 240 }}
       // onClick={onClickCard}
-      cover={<img alt="example" src={movieInfo.img} />}
+      cover={<img alt="example" src={movie.img} />}
     >
-      <Meta title={movieInfo.title} description={movieInfo.description} />
+      <Meta title={movie.title} description={movie.year} />
       {/* <Rate allowHalf defaultValue={0} onChange={changeRating}/> */}
-      <Rate allowHalf disable defaultValue={Math.round(props.movieRating*10)/10} />
-      <b>{Math.round(props.movieRating*10)/10}</b>
-      <p>
-      <IconText icon={MessageOutlined} text={props.movieRating} key="list-vertical-message" />
-      </p>
+      <Rate allowHalf disabled value={movie.rating} />
+      <b>{movie.rating}</b>
+      <p>{movie.index}</p>
+      {/* <IconText icon={MessageOutlined} text={props.movieRating} key="list-vertical-message" /> */}
     </Card>
   );
 }

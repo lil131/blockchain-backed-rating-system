@@ -3,24 +3,16 @@ import { message, Card, Rate, List, Button } from 'antd';
 import { StarTwoTone } from '@ant-design/icons';
 
 import contract from './contractAddress';
-import './App.css';
 import './MoviePage.css'
 
-const movieIndex = 1; 
-
 function MoviePage(props) {
-  const movieIndex = props.movieIndex;
+  const movie = props.movie;
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [rating, setRating] = useState(0);
-  const [ratingSum, setRatingSum] = useState(0);
-  const [ratingCount, setRatingCount] = useState(props.ratingCount);
-  const [aveRating, setAveRating] = useState(props.aveRating);
 
-
-  function onChangeRating(v) {
-    console.log('rating: ', v);
+  function onRatingChange(v) {
     setRating(v);
     updateRating(v);
   };
@@ -29,17 +21,17 @@ function MoviePage(props) {
   async function getRatings() {
     setLoading(true);
     setErrorMsg(null);
+
     try {
-      const res = await fetch(`/api/contract/${contract}/get/${movieIndex}`);
+      const res = await fetch(`/api/contract/${contract}/get/${movie.index}`);
       const {ratingsum, ratingcount, error} = await res.json();
-      console.log("client movieIndex: ", movieIndex);
+
       if (!res.ok) {
         setErrorMsg(error);
       } else {
-        setAveRating(Math.round(ratingsum/ratingcount*10)/10);
-        setRatingSum(ratingsum);
-        setRatingCount(ratingcount);
-        console.log(ratingsum, ratingcount);
+        movie.rating = Math.round(ratingsum / ratingcount * 10) / 10;
+        movie.count = ratingcount;
+        props.updateMovie(movie);
       }
     } catch(err) {
       setErrorMsg(err.stack)
@@ -50,7 +42,6 @@ function MoviePage(props) {
 
   // rate movie
   async function updateRating(rating) {
-    console.log(rating);
     setLoading(true);
     setErrorMsg(null);
     try {
@@ -58,7 +49,7 @@ function MoviePage(props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          movie_index: movieIndex,
+          movie_index: movie.index,
           rating: rating
         })
       });
@@ -72,7 +63,7 @@ function MoviePage(props) {
       }
 
     } catch(err) {
-      setErrorMsg(err.stack)
+      setErrorMsg(err.stack);
       message.error('Error! Please try again.');
     }
     setLoading(false);
@@ -82,17 +73,17 @@ function MoviePage(props) {
     <div className="site-layout-background" style={{ padding: 44, minHeight: 380 }}>
       <div className="media">
       <img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
-      <StarTwoTone /><b>{aveRating}</b>
+      <StarTwoTone /><b>{movie.rating}</b>
         <div className="rating-div" >
-          <Rate allowHalf defaultValue={rating} onChange={(v)=>onChangeRating(v)} allowClear={true}/>
-          <p>{`Ave Rating: ${aveRating}`}</p>
-          <p>{`Rating Sum: ${ratingSum}`}</p>
-          <p>{`Rating Count: ${ratingCount}`}</p>
+          <Rate allowHalf defaultValue={rating} onChange={onRatingChange} allowClear={true}/>
+          <p>{`Ave Rating: ${movie.rating}`}</p>
+          <p>{`Rating Count: ${movie.count}`}</p>
         </div>
         <p>description</p>
       </div>
-      Movie: {movieIndex}
+      Movie: {movie.title}
     </div>
   );
 }
+
 export default MoviePage;
