@@ -5,8 +5,9 @@ import { MessageOutlined, LikeOutlined, StarOutlined, DownOutlined, FallOutlined
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
-import contract from './contractAddress';
 
+import contract from './contractAddress';
+import moviedata from './MovieData.json';
 import './App.css';
 
 
@@ -22,6 +23,8 @@ function RankingPage (props) {
   const [aveRating, setAveRating] = useState();
   const [ratingCount, setRatingCount] = useState();
 
+  const data = moviedata;
+  
 
   const sortByRating = (a, b) => b[1] - a[1];
   const sortByDate = (a, b) => b[0] - a[0];
