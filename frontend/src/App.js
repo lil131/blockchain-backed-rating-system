@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { Layout, Menu, Breadcrumb, BackTop, List } from 'antd';
+
 import SearchBar from './SearchBar';
-import HomePage from './HomePage';
 import RankingPage from './RankingPage';
-import MoviePage from './MoviePage';
 import contractAddress from './contractAddress';
+
+import './App.css';
 
 const { Header, Content, Footer } = Layout;
 

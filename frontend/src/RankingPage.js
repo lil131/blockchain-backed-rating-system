@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import { List, Avatar, Space, Dropdown, Button, Menu, message, Rate, Drawer } from 'antd';
 import { MessageOutlined, LikeOutlined, StarOutlined, DownOutlined, FallOutlined } from '@ant-design/icons';
-import contract from './contractAddress';
+
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
+import contract from './contractAddress';
 
-const listData = [];
-
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://ant.design',
-    title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+import './App.css';
 
 
 function RankingPage (props) {

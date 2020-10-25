@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import { message, Card, Rate, List, Button } from 'antd';
 import { StarTwoTone } from '@ant-design/icons';
-import './MoviePage.css'
+
 import contract from './contractAddress';
+import './App.css';
+import './MoviePage.css'
 
 const movieIndex = 1; 
 
