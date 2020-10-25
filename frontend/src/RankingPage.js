@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { List, Avatar, Space, Dropdown, Button, Menu, message, Rate, Drawer } from 'antd';
-import { MessageOutlined, LikeOutlined, StarOutlined, DownOutlined, FallOutlined } from '@ant-design/icons';
+import { List, Dropdown, Button, Menu, Drawer } from 'antd';
+import { DownOutlined, FallOutlined } from '@ant-design/icons';
 
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
@@ -43,9 +43,9 @@ function RankingPage (props) {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/contract/${contract}/getlist`);
-      const {raw: movieMeta, error} = await res.json();
-
+      const res = await fetch(`/api/movies`);
+      const {movieindices, ratingsums, ratingcounts, raw: movieMeta, error} = await res.json(); // received [Array(30),Array(30),Array(30)]
+      console.log(movieMeta)
       if (!res.ok) {
         setErrorMsg(error);
       } else {
@@ -64,8 +64,7 @@ function RankingPage (props) {
         });
         list.sort(sortMethods[seletedSorting].fun);
         setMovieList(list);
-    console.log(list)
-
+        console.log(list);
       }
 
     } catch(err) {
@@ -137,7 +136,7 @@ function RankingPage (props) {
         }
       </div>
       <Drawer
-        title="Title"
+        title={selectedMovie === null ? "Title" : selectedMovie.title}
         width={600}
         placement="right"
         closable={false}
