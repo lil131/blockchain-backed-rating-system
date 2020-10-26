@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { List, Dropdown, Button, Menu, Drawer, Input, Typography, Row, Col } from 'antd';
+import { List, Dropdown, Button, Menu, Drawer, Input, Typography, Row, Col, message } from 'antd';
 import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '@react-hook/debounce';
 
@@ -22,42 +22,38 @@ const sortMethods = [
   {name: 'Date', fun: (a, b) => b.year - a.year}
 ]
 
+const DEFAULT_SORTING = 0;
+
 function RankingPage () {
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [movieList, setMovieList] = useState([]); // list for sorting
-  const [seletedSorting, setSeletedSorting] = useState(0);
+  const [seletedSorting, setSeletedSorting] = useState(DEFAULT_SORTING);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [search, setSearch] = useDebounce(null, DEBOUNCE_TIME);
 
   // get movies when component mounted 
   useEffect(() => {
-    if (movieList.length === 0) {
-      console.log('geting list');
-      getMovieList();
+    async function getMovies() {
+      setLoading(true);
+      try {
+        const res = await axios.get(`/api/movies`);
+        const list = res.data; 
+        
+        list.sort(sortMethods[DEFAULT_SORTING].fun);
+        setMovieList(list);
+      } catch(err) {
+        message.error(err);
+      }
+      setLoading(false);
     }
+
+    getMovies();
   }, []);
 
   function handleMenuClick(e) {
     setSeletedSorting(e.key);
     movieList.sort(sortMethods[e.key].fun)
     setMovieList([...movieList])
-  };
-
-  // get movie list
-  async function getMovieList() {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const res = await axios.get(`/api/movies`);
-      const list = res.data; // received [Array(30),Array(30),Array(30)]
-      
-      list.sort(sortMethods[seletedSorting].fun);
-      setMovieList(list);
-    } catch(err) {
-      setErrorMsg(err.stack)
-    }
-    setLoading(false);
   };
 
   // drawer

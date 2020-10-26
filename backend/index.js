@@ -42,7 +42,7 @@ app.post('/api/movie/:id', async (req, res) => {
   get movie rating
   response:
     {
-      ratingsum: int,
+      averating: float,
       ratingcount: int
     }
 */

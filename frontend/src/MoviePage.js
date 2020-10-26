@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { message, Rate, Statistic, Row, Col, Carousel, Button, Image, Spin, Space } from 'antd';
 import { StarTwoTone, TeamOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import './MoviePage.css'
-
-const userIndex = 4;
 
 function MoviePage(props) {
   const movie = props.movie;
@@ -13,10 +11,6 @@ function MoviePage(props) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [rating, setRating] = useState(null);
-
-  // useEffect(() => {
-  //   getRatings();
-  // }, [])
 
   function onRatingChange(v) {
     setRating(v);
@@ -35,7 +29,8 @@ function MoviePage(props) {
       movie.count = ratingcount;
       props.updateMovie(movie);
     } catch(err) {
-      setErrorMsg(err.stack)
+      setErrorMsg(err.stack);
+      message.error(errorMsg);
     }
 
     setLoading(false);
@@ -47,7 +42,7 @@ function MoviePage(props) {
     setErrorMsg(null);
 
     try {
-      const res = await axios.post(`/api/movie/${movie.id}`, {
+      await axios.post(`/api/movie/${movie.id}`, {
         rating: rating
       });
 
@@ -103,7 +98,7 @@ function MoviePage(props) {
               [0, 2, 4, 6].map(i => (
                 <Col key={i} xs={12} md={6}>
                   <Carousel autoplay dots={false}>
-                    {movie.photos.slice(i, i + 2).map((e, j) => (<img key={j} src={movie.photos[i+j]} />))}
+                    {movie.photos.slice(i, i + 2).map((e, j) => (<img key={j} alt={`movie-${i + j}`} src={movie.photos[i+j]} />))}
                   </Carousel>
                 </Col>
               ))

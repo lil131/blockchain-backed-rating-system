@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, BackTop } from 'antd';
+import { Layout, BackTop } from 'antd';
 import { RadarChartOutlined } from '@ant-design/icons';
 
 import RankingPage from './RankingPage';
