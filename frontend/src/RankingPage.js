@@ -137,7 +137,7 @@ function RankingPage () {
       </div>
       <Drawer
         title={selectedMovie === null ? "Title" : <Title level={2}>{selectedMovie.title}</Title>}
-        width={'80%'}
+        width={null}
         placement="right"
         closable={false}
         onClose={onCloseDrawer}

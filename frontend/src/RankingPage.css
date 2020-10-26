@@ -6,6 +6,11 @@
     margin-bottom: 15px;
 }
 
+.ant-drawer-content-wrapper {
+    width: 80%;
+    max-width: 612px;
+}
+
 /* .search-bar {
     float: left;
 }

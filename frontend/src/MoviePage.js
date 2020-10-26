@@ -12,7 +12,7 @@ function MoviePage(props) {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(null);
 
   useEffect(() => {
     getRatings();
@@ -30,9 +30,8 @@ function MoviePage(props) {
 
     try {
       const res = await axios.get(`/api/movies/${movie.id}`);
-      const {ratingsum, ratingcount} = res.data;
-
-      movie.rating = Math.round(ratingsum / ratingcount * 10) / 10;
+      const {averating, ratingcount} = res.data;
+      movie.rating = averating;
       movie.count = ratingcount;
       props.updateMovie(movie);
     } catch(err) {
@@ -87,7 +86,14 @@ function MoviePage(props) {
       </Row>
       </div>
       <div className="rating-div" >
-        <Rate allowHalf defaultValue={rating} onChange={onRatingChange} allowClear={true}/>{rating}
+        <Rate 
+          allowHalf 
+          disabled={rating !== null} 
+          defaultValue={rating === null ? 0 : rating} 
+          onChange={onRatingChange} 
+          allowClear={true}
+        />
+        {rating}
       </div>
       <div className="description">
         <Descriptions
