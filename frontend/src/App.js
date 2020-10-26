@@ -14,8 +14,10 @@ function App() {
     <div className="App">
       <Layout className="layout">
         <Header>
-          <RadarChartOutlined style={{ fontSize: '40px', color: '#ffffff' }} />
-          <span style={{ color: 'white', fontSize: '15px' }}> Movie Rating System</span>
+          <div className="logo">
+            <RadarChartOutlined style={{ fontSize: '36px' }} />
+            <span style={{ fontSize: '16px', marginLeft:10 }}> Movie Rating System</span>
+          </div>
         </Header>
 
         <Content style={{ padding: '0 50px' }}>

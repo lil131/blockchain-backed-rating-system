@@ -27,7 +27,7 @@ function MoviePage(props) {
       const {averating, ratingcount} = res.data;
       movie.rating = averating;
       movie.count = ratingcount;
-      props.updateMovie(movie);
+      props.updateMovie({...movie});
     } catch(err) {
       setErrorMsg(err.stack);
       message.error(errorMsg);
@@ -90,7 +90,7 @@ function MoviePage(props) {
       <div className="details"><b>Directors: </b>{movie.directors.join(', ')}</div>
       <div className="details"><b>Actors: </b>{movie.stars.join(', ')}</div>
       <div className="details"><b>Category: </b>{movie.category}</div>
-      <Button className="imdb" type="primary" href={movie.imdbUrl}><b>IMDb</b></Button>
+      <Button ghost className="imdb" type="primary" href={movie.imdbUrl} target="_blank"><b>IMDb</b></Button>
 
       <div className="carousel">
         <Row>

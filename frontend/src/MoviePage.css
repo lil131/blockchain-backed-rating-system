@@ -1,11 +1,3 @@
-@import '~antd/dist/antd.css';
-#components-layout-demo-fixed .logo {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 26px 24px 26px 0;
-  float: left;
-}
 .site-layout-background {
   background: #fff;
   padding: 24;
@@ -32,6 +24,6 @@
   margin-bottom: 15px;
 }
 
-.year .directors .actors {
-  margin: 5px;
+.details {
+  margin-top: 7px;
 }

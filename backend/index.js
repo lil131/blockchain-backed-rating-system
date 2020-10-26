@@ -1,8 +1,10 @@
 const express = require('express');
-const app = express();
+const path = require('path');
 const Swagger = require('swagger-client');
 const bodyparser = require('body-parser');
 const movieData = require('./data');
+
+const app = express();
 
 let swaggerClient; // Initialized in init()
 
@@ -93,6 +95,13 @@ app.get('/api/movies', async (req, res) => {
     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
   }
 });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('../frontend/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+  });
+}
   
 async function init() {
   try {

@@ -42,7 +42,7 @@ async function getItem(idx, url) {
     length: $('.title_wrapper > .subtext > time').text().trim(),
     category: $('.title_wrapper > .subtext > a').first().text().trim(),
     desc: $('.summary_text').text().trim(),
-    directors: $('.plot_summary .credit_summary_item > a').map((i, ele) => $(ele).text().trim()).toArray(),
+    directors: $('.plot_summary .credit_summary_item').first().find('a').map((i, ele) => $(ele).text().trim()).toArray(),
     stars: $('.cast_list tr').slice(1, 8).map((i, ele) => $($(ele).find('td').get(1)).find('a').text().trim()).toArray(),
     img: $('.poster > a > img').attr('src'),
     photos: await getMedia(imdbUrl + 'mediaindex'),

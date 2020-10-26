@@ -10,7 +10,7 @@ import BoxCard from './BoxCard';
 import './RankingPage.css';
 
 const { Title } = Typography;
-const DEBOUNCE_TIME = 500;
+const DEBOUNCE_TIME = 400;
 const dummyList = [];
 for (let i = 0; i < 30; i ++) {
   dummyList.push({id: i});
@@ -98,7 +98,7 @@ function RankingPage () {
     <div className="movie-list-content">
       <div className="ranking-layout-content">
         <div className="top-bar">
-          <Row gutter={[10, 8]}>
+          <Row gutter={[10, 8]} align="middle">
             <Col xs={24} md={6}>
               <Input size="large" placeholder="input movie title" onChange={onSearch} prefix={<SearchOutlined />} />
             </Col>

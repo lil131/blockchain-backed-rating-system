@@ -21,4 +21,4 @@ function BoxCard(props) {
   );
 }
 
-export default BoxCard;
+export default React.memo(BoxCard);
