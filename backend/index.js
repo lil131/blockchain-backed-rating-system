@@ -32,7 +32,6 @@ app.post('/api/movie/:id', async (req, res) => {
       "kld-sync": "true"
     });
     res.status(200).send(postRes.body)
-    console.log(postRes.body)
 
   }
   catch(err) {

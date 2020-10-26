@@ -9,6 +9,9 @@ module.exports = {
   FROM_ADDRESS: "0x15B54C9fbdCc2C86f71a730A286027b99B46A63e",
   // Details of the contract source code in the contracts directory
   // ** if you pull in pre-reqs like OpenZeppelin, just put them all inside the contracts directory **
-  CONTRACT_MAIN_SOURCE_FILE: "simplestorage.sol", // filename
-  CONTRACT_CLASS_NAME: "simplestorage" // Solidity class within the file
+  CONTRACT_MAIN_SOURCE_FILE: "moviestorage.sol", // filename
+  CONTRACT_CLASS_NAME: "moviestorage", // Solidity class within the file
+
+  CONTRACT_INSTANCE: "xxx", // deployed instance
+  OPENAPI: "xxx" 
 }
