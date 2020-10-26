@@ -14,10 +14,8 @@ function App() {
     <div className="App">
       <Layout className="layout">
         <Header>
-          <div className="logo" />
-          <Menu theme="dark" mode="horizontal" >
-            <Menu.Item key="1"><RadarChartOutlined spin={true} /></Menu.Item>
-          </Menu>
+          <RadarChartOutlined style={{ fontSize: '40px', color: '#ffffff' }} />
+          <span style={{ color: 'white', fontSize: '15px' }}> Movie Rating System</span>
         </Header>
 
         <Content style={{ padding: '0 50px' }}>
