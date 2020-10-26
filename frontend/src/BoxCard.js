@@ -12,7 +12,7 @@ function BoxCard(props) {
   return (
     <Card
       hoverable
-      style={{ maxWidth: 320 }}
+      style={{ width: '100%', maxWidth: 320 }}
       cover={<img alt="example" src={movie.img} />}
     >
       <Meta title={movie.title} description={movie.year} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { message, Rate, Statistic, Row, Col, Carousel, Descriptions } from 'antd';
+import { message, Rate, Statistic, Row, Col, Carousel, Descriptions, Image } from 'antd';
 import { StarTwoTone, TeamOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -62,31 +62,25 @@ function MoviePage(props) {
 
   return (
     <div>
-      <div className="carousel">
-        <Row>
-            {
-              [0, 2, 4, 6].map(i => (
-                <Col key={i} xs={12} md={6}>
-                  <Carousel autoplay dots={false}>
-                    {movie.photos.slice(i, i + 2).map((e, j) => (<img key={j} src={movie.photos[i+j]} />))}
-                  </Carousel>
-                </Col>
-              ))
-            }
+      <div className="rating-stat">
+        <Row gutter={16}>
+          <Col span={12}>
+            <Statistic title="Rate" value={movie.rating === null ? 0 : movie.rating} prefix={<StarTwoTone />} />
+          </Col>
+          <Col span={12}>
+            <Statistic title="Rated" value={movie.count} prefix={<TeamOutlined />}/>
+          </Col>
         </Row>
       </div>
-      <div className="rating-stat">
-      <Row gutter={16}>
-        <Col span={12}>
-          <Statistic title="Rate" value={movie.rating === null ? 0 : movie.rating} prefix={<StarTwoTone />} />
-        </Col>
-        <Col span={12}>
-          <Statistic title="Rated" value={movie.count} prefix={<TeamOutlined />}/>
-        </Col>
-      </Row>
+      <div className="poster">
+        {/* <img src={movie.img} /> */}
+        <Image
+          width={200}
+          src={movie.img}
+        />
       </div>
       <div className="rating-div" >
-        <Rate 
+        Rate this: <Rate 
           allowHalf 
           disabled={rating !== null} 
           defaultValue={rating === null ? 0 : rating} 
@@ -107,6 +101,19 @@ function MoviePage(props) {
             {movie.desc}
           </Descriptions.Item>
         </Descriptions>
+      </div>
+      <div className="carousel">
+        <Row>
+            {
+              [0, 2, 4, 6].map(i => (
+                <Col key={i} xs={12} md={6}>
+                  <Carousel autoplay dots={false}>
+                    {movie.photos.slice(i, i + 2).map((e, j) => (<img key={j} src={movie.photos[i+j]} />))}
+                  </Carousel>
+                </Col>
+              ))
+            }
+        </Row>
       </div>
     </div>
   );

@@ -5,38 +5,32 @@ const { Meta } = Card;
 
 
 function ListOnLoading() {
+  const data = [];
+  for (let i = 1; i <= 20; i ++) {
+    data.push(i)
+  }
 
   return (
-    <>
     <List
       grid={{
-        gutter: 16,
+        gutter: [16, 20],
         xs: 1,
         sm: 2,
         md: 3,
         lg: 4,
         xl: 5,
-        xxl: 6,
+        xxl: 5,
       }}
-      dataSource={[1,1,1,1,1,1]}
+      dataSource={data}
       renderItem={(i) => (
         <List.Item>
-          <Card style={{ width: 300, marginTop: 16 }}>
-            <Skeleton loading={true} avatar active>
-              <Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Skeleton>
+          <Card >
+            <Skeleton.Image active />
+            <Skeleton loading={true} avatar active />
           </Card>
         </List.Item>
       )}
     />
-    
-    </>
   );
 }
 
