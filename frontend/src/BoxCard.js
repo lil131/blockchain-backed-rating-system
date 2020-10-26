@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Rate, Space } from 'antd';
+import { Card, Rate } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 
 import './App.css';
 
@@ -11,14 +12,13 @@ function BoxCard(props) {
   return (
     <Card
       hoverable
-      style={{ width: 240 }}
+      style={{ maxWidth: 320 }}
       // onClick={onClickCard}
       cover={<img alt="example" src={movie.img} />}
     >
       <Meta title={movie.title} description={movie.year} />
-      <Rate allowHalf disabled value={movie.rating} />
-      <b>{movie.rating}</b>
-      <p>{movie.id}</p>
+      <Rate allowHalf disabled value={movie.rating} /><span>  {movie.rating}</span>
+      <p><TeamOutlined /> {movie.count}</p>
     </Card>
   );
 }

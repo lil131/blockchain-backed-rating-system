@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { List, Dropdown, Button, Menu, Drawer, Input, Typography } from 'antd';
+import { List, Dropdown, Button, Menu, Drawer, Input, Typography, Row, Col } from 'antd';
 import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '@react-hook/debounce';
 
@@ -99,23 +99,29 @@ function RankingPage () {
     <div className="movie-list-content">
       <div className="ranking-layout-content">
         <div className="top-bar">
-          <Input size="large" placeholder="input movie title" onChange={onSearch} prefix={<SearchOutlined />} />
-          <Dropdown overlay={menu}>
-            <Button>
-              Sort by {sortMethods[seletedSorting].name} <DownOutlined />
-            </Button>
-          </Dropdown>
+          <Row gutter={[10, 8]}>
+            <Col xs={24} md={6}>
+              <Input size="large" placeholder="input movie title" onChange={onSearch} prefix={<SearchOutlined />} />
+            </Col>
+            <Col xs={24} md={6}>
+              <Dropdown overlay={menu}>
+                <Button>
+                  Sort by {sortMethods[seletedSorting].name} <DownOutlined />
+                </Button>
+              </Dropdown>
+            </Col>
+          </Row>
         </div> 
         {loading ? <ListOnLoading/> :
           <List
             grid={{
-              gutter: 16,
+              gutter: [16, 20],
               xs: 1,
               sm: 2,
               md: 3,
               lg: 4,
               xl: 5,
-              xxl: 6,
+              xxl: 5,
             }}
             dataSource={renderList}
             rowKey='id'

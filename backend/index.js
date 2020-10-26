@@ -54,9 +54,12 @@ app.get('/api/movies/:id', async (req, res) => {
       "kld-from": FROM_ADDRESS,
       "kld-sync": "true"
     });
-    res.status(200).send(postRes.body)
-  }
-  catch(err) {
+    const ratingsum = postRes.body.ratingsum;
+    const ratingcount = postRes.body.ratingcount;
+    const averating = counts[i] === 0 ? 0 : Math.round(ratingsum / ratingcount * 10) / 10;
+    res.status(200).send({averating: averating, ratingcount: ratingcount});
+    
+  } catch(err) {
     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
   }
 });
@@ -71,7 +74,6 @@ app.get('/api/movies', async (req, res) => {
     });
 
     const raw = postRes.body.raw;
-
     const totalRatings = raw[1];
     const counts = raw[2];
 

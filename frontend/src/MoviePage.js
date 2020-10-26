@@ -62,24 +62,18 @@ function MoviePage(props) {
   }
 
   return (
-    <div className="site-layout-background" style={{ padding: 44, minHeight: 380 }}>
+    <div>
       <div className="carousel">
         <Row>
-          <Col span={8}>
-            <Carousel autoplay dots={false}>
-              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[i]} />))}
-            </Carousel>
-          </Col>
-          <Col span={8}>
-            <Carousel autoplay dots={false}>
-              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[(i + 1) % 10]} />))}
-            </Carousel>
-          </Col>
-          <Col span={8}>
-            <Carousel autoplay dots={false}>
-              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[(i + 2) % 10]} />))}
-            </Carousel>
-          </Col>
+            {
+              [0, 2, 4, 6].map(i => (
+                <Col key={i} xs={12} md={6}>
+                  <Carousel autoplay dots={false}>
+                    {movie.photos.slice(i, i + 2).map((e, j) => (<img key={j} src={movie.photos[i+j]} />))}
+                  </Carousel>
+                </Col>
+              ))
+            }
         </Row>
       </div>
       <div className="rating-stat">
