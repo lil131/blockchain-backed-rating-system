@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { message, Rate } from 'antd';
-import { StarTwoTone } from '@ant-design/icons';
+import { message, Rate, Statistic, Row, Col, Carousel, Descriptions } from 'antd';
+import { StarTwoTone, TeamOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 import './MoviePage.css'
@@ -63,17 +63,51 @@ function MoviePage(props) {
 
   return (
     <div className="site-layout-background" style={{ padding: 44, minHeight: 380 }}>
-      <div className="media">
-      <img alt="example" src={movie.img} />
-      <StarTwoTone /><b>{movie.rating}</b>
-        <div className="rating-div" >
-          <Rate allowHalf defaultValue={rating} onChange={onRatingChange} allowClear={true}/>
-          <p>{`Ave Rating: ${movie.rating}`}</p>
-          <p>{`Rating Count: ${movie.count}`}</p>
-        </div>
-        <p>description: {movie.description}</p>
+      <div className="carousel">
+        <Row>
+          <Col span={8}>
+            <Carousel autoplay dots={false}>
+              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[i]} />))}
+            </Carousel>
+          </Col>
+          <Col span={8}>
+            <Carousel autoplay dots={false}>
+              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[(i + 1) % 10]} />))}
+            </Carousel>
+          </Col>
+          <Col span={8}>
+            <Carousel autoplay dots={false}>
+              {movie.photos.map((e, i) => (<img key={i} src={movie.photos[(i + 2) % 10]} />))}
+            </Carousel>
+          </Col>
+        </Row>
       </div>
-      Movie: {movie.title}
+      <div className="rating-stat">
+      <Row gutter={16}>
+        <Col span={12}>
+          <Statistic title="Rate" value={movie.rating} prefix={<StarTwoTone />} />
+        </Col>
+        <Col span={12}>
+          <Statistic title="Rated" value={movie.count} prefix={<TeamOutlined />}/>
+        </Col>
+      </Row>
+      </div>
+      <div className="rating-div" >
+        <Rate allowHalf defaultValue={rating} onChange={onRatingChange} allowClear={true}/>{rating}
+      </div>
+      <div className="description">
+        <Descriptions
+          bordered
+          column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
+        >
+          <Descriptions.Item label="Year">{movie.year}</Descriptions.Item>
+          <Descriptions.Item label="Length">{movie.length}</Descriptions.Item>
+          <Descriptions.Item label="Category">{movie.category}</Descriptions.Item>
+          <Descriptions.Item label="Description">
+            {movie.desc}
+          </Descriptions.Item>
+        </Descriptions>
+      </div>
     </div>
   );
 }

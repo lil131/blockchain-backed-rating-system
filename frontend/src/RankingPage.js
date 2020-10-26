@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { List, Dropdown, Button, Menu, Drawer, Input } from 'antd';
-import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { useDebounce } from '@react-hook/debounce'
+import { List, Dropdown, Button, Menu, Drawer, Input, Typography } from 'antd';
+import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
+import { useDebounce } from '@react-hook/debounce';
 
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
 
-import moviedata from './MovieData.json';
 import './RankingPage.css';
 
+const { Title } = Typography;
 const DEBOUNCE_TIME = 500;
-
-const { Search } = Input;
 
 const sortMethods = [
   {name: 'Rating', fun: (a, b) => b.rating - a.rating},
@@ -132,7 +130,7 @@ function RankingPage () {
         }
       </div>
       <Drawer
-        title={selectedMovie === null ? "Title" : selectedMovie.title}
+        title={selectedMovie === null ? "Title" : <Title level={2}>{selectedMovie.title}</Title>}
         width={'80%'}
         placement="right"
         closable={false}
