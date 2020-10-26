@@ -1,13 +1,37 @@
 @import '~antd/dist/antd.css';
 #components-layout-demo-fixed .logo {
-    width: 120px;
-    height: 31px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 26px 24px 26px 0;
-    float: left;
-  }
-  .site-layout-background {
-    background: #fff;
-    padding: 24;
-    min-Height: 380;
-  }
+  width: 120px;
+  height: 31px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 26px 24px 26px 0;
+  float: left;
+}
+.site-layout-background {
+  background: #fff;
+  padding: 24;
+  min-Height: 380;
+}
+
+.poster {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rating-stat {
+  text-align: center;
+}
+
+.description {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.imdb {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.year .directors .actors {
+  margin: 5px;
+}

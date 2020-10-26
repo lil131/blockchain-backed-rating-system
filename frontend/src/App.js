@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Layout, Menu, BackTop } from 'antd';
+import { RadarChartOutlined } from '@ant-design/icons';
 
 import RankingPage from './RankingPage';
 
@@ -15,7 +16,7 @@ function App() {
         <Header>
           <div className="logo" />
           <Menu theme="dark" mode="horizontal" >
-            <Menu.Item key="1">Logo</Menu.Item>
+            <Menu.Item key="1"><RadarChartOutlined spin={true} /></Menu.Item>
           </Menu>
         </Header>
 

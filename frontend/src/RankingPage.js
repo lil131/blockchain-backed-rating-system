@@ -4,7 +4,6 @@ import { List, Dropdown, Button, Menu, Drawer, Input, Typography, Row, Col } fro
 import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '@react-hook/debounce';
 
-import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
 

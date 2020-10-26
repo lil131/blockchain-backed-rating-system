@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { message, Rate, Statistic, Row, Col, Carousel, Descriptions, Image } from 'antd';
+import { message, Rate, Statistic, Row, Col, Carousel, Button, Image, Spin, Space } from 'antd';
 import { StarTwoTone, TeamOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -14,9 +14,9 @@ function MoviePage(props) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [rating, setRating] = useState(null);
 
-  useEffect(() => {
-    getRatings();
-  }, [])
+  // useEffect(() => {
+  //   getRatings();
+  // }, [])
 
   function onRatingChange(v) {
     setRating(v);
@@ -62,46 +62,41 @@ function MoviePage(props) {
 
   return (
     <div>
-      <div className="rating-stat">
-        <Row gutter={16}>
-          <Col span={12}>
-            <Statistic title="Rate" value={movie.rating === null ? 0 : movie.rating} prefix={<StarTwoTone />} />
-          </Col>
-          <Col span={12}>
-            <Statistic title="Rated" value={movie.count} prefix={<TeamOutlined />}/>
-          </Col>
-        </Row>
-      </div>
       <div className="poster">
-        {/* <img src={movie.img} /> */}
-        <Image
-          width={200}
-          src={movie.img}
-        />
+        <Image src={movie.img} />
+        <div style={{margin: 10}}>
+          <Space>
+            Your Rating: 
+            <Rate 
+              allowHalf 
+              disabled={rating !== null} 
+              defaultValue={rating === null ? 0 : rating} 
+              onChange={onRatingChange} 
+              allowClear={true}
+            />
+            {rating === null ? 0 : rating}
+            {loading && <Spin />}
+          </Space>
+        </div>
       </div>
-      <div className="rating-div" >
-        Rate this: <Rate 
-          allowHalf 
-          disabled={rating !== null} 
-          defaultValue={rating === null ? 0 : rating} 
-          onChange={onRatingChange} 
-          allowClear={true}
-        />
-        {rating === null ? 0 : rating}
-      </div>
-      <div className="description">
-        <Descriptions
-          bordered
-          column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
-        >
-          <Descriptions.Item label="Year">{movie.year}</Descriptions.Item>
-          <Descriptions.Item label="Length">{movie.length}</Descriptions.Item>
-          <Descriptions.Item label="Category">{movie.category}</Descriptions.Item>
-          <Descriptions.Item label="Description">
-            {movie.desc}
-          </Descriptions.Item>
-        </Descriptions>
-      </div>
+
+      <Row gutter={16} className="rating-stat">
+        <Col span={12}>
+          <Statistic title="Average Rating" value={movie.rating === null ? 0 : movie.rating} prefix={<StarTwoTone />} />
+        </Col>
+        <Col span={12}>
+          <Statistic title="Rating Count" value={movie.count} prefix={<TeamOutlined />}/>
+        </Col>
+      </Row>
+
+      <div className="description">{movie.desc}</div>
+      <div className="details"><b>Length: </b>{movie.length}</div>
+      <div className="details"><b>Year: </b>{movie.year}</div>
+      <div className="details"><b>Directors: </b>{movie.directors.join(', ')}</div>
+      <div className="details"><b>Actors: </b>{movie.stars.join(', ')}</div>
+      <div className="details"><b>Category: </b>{movie.category}</div>
+      <Button className="imdb" type="primary" href={movie.imdbUrl}><b>IMDb</b></Button>
+
       <div className="carousel">
         <Row>
             {

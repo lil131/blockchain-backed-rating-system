@@ -6,8 +6,7 @@ contract moviestorage {
     uint movie_index;
     uint rating_sum;
     uint rating_count;
-    // uint256[100] rated_users; // user index
-    // uint256[100] user_ratings;
+
   }
   
   uint public movieCount;
