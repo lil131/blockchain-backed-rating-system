@@ -78,7 +78,7 @@ function MoviePage(props) {
       <div className="rating-stat">
       <Row gutter={16}>
         <Col span={12}>
-          <Statistic title="Rate" value={movie.rating} prefix={<StarTwoTone />} />
+          <Statistic title="Rate" value={movie.rating === null ? 0 : movie.rating} prefix={<StarTwoTone />} />
         </Col>
         <Col span={12}>
           <Statistic title="Rated" value={movie.count} prefix={<TeamOutlined />}/>
@@ -93,7 +93,7 @@ function MoviePage(props) {
           onChange={onRatingChange} 
           allowClear={true}
         />
-        {rating}
+        {rating === null ? 0 : rating}
       </div>
       <div className="description">
         <Descriptions
