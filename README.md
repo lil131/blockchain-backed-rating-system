@@ -52,20 +52,19 @@ npm start
 ### List movies
 List movies with posters, titles, average ratings;
 Movies can be sorted by rating, publish time or popularity.
-![List Movie](intro-1.jpg)
+![Sort Movie](readme/intro-7.jpg)
+![List Movie](readme/intro-1.jpg)
 
 ### Rate movie
 Click the movie card will open a drawer showing the detailed movie information and allow user to rate the movie.
-![Rate Movie](intro-2.jpg)
+![Rate Movie](readme/intro-2.jpg)
 
 ### Search movie
 Typing title keywords will instantly get the related movies.
-![Search Movie](intro-3.jpg)
+![Search Movie](readme/intro-3.jpg)
 
 ### Responsive
-Responsive to every viewsize.
-![Large Screen](intro-4.jpg)
-![Middle Screen](intro-5.jpg)
-![Small Screen](intro-6.jpg)
-![Small Screen](intro-7.jpg)
-
+Responsive to different viewsize.
+![Large Screen](readme/intro-4.jpg)
+![Middle Screen](readme/intro-5.jpg)
+![Small Screen](readme/intro-6.jpg)
