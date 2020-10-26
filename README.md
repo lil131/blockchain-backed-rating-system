@@ -50,7 +50,7 @@ npm start
 ```
 ## Features
 ### List movies
-List movies with posters, titles, average ratings;
+List movies with posters, titles, average ratings, etc.
 Movies can be sorted by rating, publish time or popularity.
 ![Sort Movie](readme/intro-7.jpg)
 ![List Movie](readme/intro-1.jpg)
