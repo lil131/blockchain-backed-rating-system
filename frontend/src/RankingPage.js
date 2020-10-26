@@ -12,6 +12,10 @@ import './RankingPage.css';
 
 const { Title } = Typography;
 const DEBOUNCE_TIME = 500;
+const dummyList = [];
+for (let i = 0; i < 30; i ++) {
+  dummyList.push({id: i});
+}
 
 const sortMethods = [
   {name: 'Rating', fun: (a, b) => b.rating - a.rating},
@@ -112,28 +116,26 @@ function RankingPage () {
             </Col>
           </Row>
         </div> 
-        {loading ? <ListOnLoading/> :
-          <List
-            grid={{
-              gutter: [16, 20],
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 4,
-              xl: 5,
-              xxl: 5,
-            }}
-            dataSource={renderList}
-            rowKey='id'
-            renderItem={item => (
-              <List.Item>
-                <div onClick={() => onClickCard(item)}>
-                  <BoxCard movie={item} />
-                </div>
-              </List.Item>
-            )}
-          />
-        }
+        <List
+          grid={{
+            gutter: [16, 20],
+            xs: 1,
+            sm: 2,
+            md: 3,
+            lg: 4,
+            xl: 5,
+            xxl: 5,
+          }}
+          dataSource={loading ? dummyList : renderList}
+          rowKey='id'
+          renderItem={item => (
+            <List.Item>
+              <div onClick={() => onClickCard(item)}>
+                <BoxCard movie={item} loading={loading} />
+              </div>
+            </List.Item>
+          )}
+        />
       </div>
       <Drawer
         title={selectedMovie === null ? "Title" : <Title level={2}>{selectedMovie.title}</Title>}

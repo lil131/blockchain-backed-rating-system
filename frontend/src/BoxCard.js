@@ -2,8 +2,6 @@ import React from 'react';
 import { Card, Rate } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 
-import './App.css';
-
 const { Meta } = Card;
 
 function BoxCard(props) {
@@ -13,7 +11,8 @@ function BoxCard(props) {
     <Card
       hoverable
       style={{ width: '100%', maxWidth: 320 }}
-      cover={<img alt="example" src={movie.img} />}
+      cover={props.loading ? undefined : <img alt="example" src={movie.img} />}
+      loading={props.loading}
     >
       <Meta title={movie.title} description={movie.year} />
       <Rate allowHalf disabled value={movie.rating} /><span>  {movie.rating}</span>
