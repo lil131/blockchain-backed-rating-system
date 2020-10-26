@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { message, Rate } from 'antd';
 import { StarTwoTone } from '@ant-design/icons';
+import axios from 'axios';
 
 import './MoviePage.css'
 
@@ -28,17 +29,12 @@ function MoviePage(props) {
     setErrorMsg(null);
 
     try {
-      const res = await fetch(`/api/movies/${movie.index}`);
-      const {ratingsum, ratingcount, error} = await res.json();
-      console.log(ratingsum, ratingcount, error)
-      if (!res.ok) {
-        setErrorMsg(error);
-      } else {
-        movie.rating = Math.round(ratingsum / ratingcount * 10) / 10;
-        movie.count = ratingcount;
-        props.updateMovie(movie);
-        console.log(movie);
-      }
+      const res = await axios.get(`/api/movies/${movie.id}`);
+      const {ratingsum, ratingcount} = res.data;
+
+      movie.rating = Math.round(ratingsum / ratingcount * 10) / 10;
+      movie.count = ratingcount;
+      props.updateMovie(movie);
     } catch(err) {
       setErrorMsg(err.stack)
     }
@@ -50,25 +46,14 @@ function MoviePage(props) {
   async function updateRating(rating) {
     setLoading(true);
     setErrorMsg(null);
-    try {
-      const res = await fetch(`/api/movie`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          movie_index: movie.index,
-          rating: rating
-        })
-      });
-      const {error} = await res.json();
-      
-      if (!res.ok) {
-        setErrorMsg(error)
-        message.error('Error! Please try again.');
-      } else {
-        getRatings();
-        message.success('Rated Successfully!');
-      }
 
+    try {
+      const res = await axios.post(`/api/movie/${movie.id}`, {
+        rating: rating
+      });
+
+      getRatings();
+      message.success('Rated Successfully!');
     } catch(err) {
       setErrorMsg(err.stack);
       message.error('Error! Please try again.');

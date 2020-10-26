@@ -2,33 +2,7 @@ const express = require('express');
 const app = express();
 const Swagger = require('swagger-client');
 const bodyparser = require('body-parser');
-
-
-const movies = {
-  1 : {
-    id: '111',
-    ratingSum: 10,
-    ratingCount: 5,
-    ratedUsers: ['1','2','3','4','5'],
-    userRatings: [1,2,3,2,2]
-  },
-  2 : {
-    id: '222',
-    ratingSum: 15,
-    ratingCount: 3,
-    ratedUsers: ['2','1','5'],
-    userRatings: [5,5,5]
-  },
-  3 : {
-    id: '333',
-    ratingSum: 1,
-    ratingCount: 1,
-    ratedUsers: ['3'],
-    userRatings: ['1']
-  }
-};
-
-
+const movieData = require('./data');
 
 let swaggerClient; // Initialized in init()
 
@@ -44,12 +18,12 @@ const {
 app.use(bodyparser.json()); 
 
 // rate movie
-app.post('/api/movie', async (req, res) => {
+app.post('/api/movie/:id', async (req, res) => {
   try {
     let postRes = await swaggerClient.apis.default.rateMovie_post({
       address: CONTRACT_INSTANCE,
       body: {
-        movie_index: req.body.movie_index,
+        movie_index: req.params.id,
         rating: req.body.rating,
       },
       "kld-from": FROM_ADDRESS,
@@ -64,19 +38,23 @@ app.post('/api/movie', async (req, res) => {
   }
 });
 
-// get movie
-app.get('/api/movies/:movie_index', async (req, res) => {
+/* 
+  get movie rating
+  response:
+    {
+      ratingsum: int,
+      ratingcount: int
+    }
+*/
+app.get('/api/movies/:id', async (req, res) => {
   try {
-    console.log(req.params.movie_index)
     let postRes = await swaggerClient.apis.default.getMovie_get({
       address: CONTRACT_INSTANCE,
-      movie_index: req.params.movie_index,
+      movie_index: req.params.id,
       "kld-from": FROM_ADDRESS,
       "kld-sync": "true"
     });
-    console.log("req.params.movie_index: ", req.params.movie_index)
     res.status(200).send(postRes.body)
-    // console.log(postRes.body)
   }
   catch(err) {
     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
@@ -86,57 +64,33 @@ app.get('/api/movies/:movie_index', async (req, res) => {
 // get movie list
 app.get('/api/movies', async (req, res) => {
   try {
-    let postRes = await swaggerClient.apis.default.getMovieList_get({
+    const postRes = await swaggerClient.apis.default.getMovieList_get({
       address: CONTRACT_INSTANCE,
       "kld-from": FROM_ADDRESS,
       "kld-sync": "true"
     });
-    res.status(200).send(postRes.body)
-    // console.log(`postRes.body:`);
-    // console.log(postRes);
-  }
-  catch(err) {
+
+    const raw = postRes.body.raw;
+
+    const totalRatings = raw[1];
+    const counts = raw[2];
+
+    totalRatings.forEach((r, i) => {
+      if (i < movieData.length) {
+        movieData[i].rating = counts[i] === 0 ? 0 : Math.round(r / counts[i] * 10) / 10;
+      }
+    });
+    counts.forEach((c, i) => {
+      if (i < movieData.length) {
+        movieData[i].count = c;
+      }
+    });
+
+    res.status(200).send(movieData.slice(0, 100))
+  } catch(err) {
     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
   }
 });
-
-// app.post('/api/contract/:address/value', async (req, res) => {
-//   try {
-//     let postRes = await swaggerClient.apis.default.set_post({
-//       address: req.params.address,
-//       body: {
-//         x: req.body.x,
-//       },
-//       "kld-from": FROM_ADDRESS,
-//       "kld-sync": "true"
-//     });
-//     res.status(200).send(postRes.body)
-//     console.log(postRes.body)
-
-//   }
-//   catch(err) {
-//     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
-//   }
-// });
-
-// app.get('/api/contract/:address/value', async (req, res) => {
-//   try {
-//     let postRes = await swaggerClient.apis.default.get_get({
-//       address: req.params.address,
-//       body: {
-//         x: req.body.x
-//       },
-//       "kld-from": FROM_ADDRESS,
-//       "kld-sync": "true"
-//     });
-//     res.status(200).send(postRes.body)
-//     console.log(postRes.body)
-//     console.log(postRes.body.x);
-//   }
-//   catch(err) {
-//     res.status(500).send({error: `${err.response && JSON.stringify(err.response.body) && err.response.text}\n${err.stack}`});
-//   }
-// });
   
 async function init() {
   try {

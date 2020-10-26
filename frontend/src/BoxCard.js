@@ -18,7 +18,7 @@ function BoxCard(props) {
       <Meta title={movie.title} description={movie.year} />
       <Rate allowHalf disabled value={movie.rating} />
       <b>{movie.rating}</b>
-      <p>{movie.index}</p>
+      <p>{movie.id}</p>
     </Card>
   );
 }

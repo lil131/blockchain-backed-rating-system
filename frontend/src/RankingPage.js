@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { List, Dropdown, Button, Menu, Drawer, Input } from 'antd';
 import { DownOutlined, FallOutlined, SearchOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { useDebounce } from '@react-hook/debounce'
+
 import ListOnLoading from './ListOnLoading';
 import MoviePage from './MoviePage';
 import BoxCard from './BoxCard';
 
 import moviedata from './MovieData.json';
 import './RankingPage.css';
+
+const DEBOUNCE_TIME = 500;
 
 const { Search } = Input;
 
@@ -22,7 +27,7 @@ function RankingPage () {
   const [movieList, setMovieList] = useState([]); // list for sorting
   const [seletedSorting, setSeletedSorting] = useState(0);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [search, setSearch] = useState(null);
+  const [search, setSearch] = useDebounce(null, DEBOUNCE_TIME);
 
   // get movies when component mounted 
   useEffect(() => {
@@ -43,30 +48,11 @@ function RankingPage () {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch(`/api/movies`);
-      const {movieindices, ratingsums, ratingcounts, raw: movieMeta, error} = await res.json(); // received [Array(30),Array(30),Array(30)]
-      console.log(movieMeta)
-      if (!res.ok) {
-        setErrorMsg(error);
-      } else {
-        const list = Object.keys(moviedata).map(k => moviedata[k]);
-        const totalRatings = movieMeta[1];
-        const counts = movieMeta[2];
-        totalRatings.forEach((r, i) => {
-          if (i < list.length) {
-            list[i].rating = counts[i] === 0 ? 0 : Math.round(r / counts[i] * 10) / 10;
-          }
-        });
-        counts.forEach((c, i) => {
-          if (i < list.length) {
-            list[i].count = c;
-          }
-        });
-        list.sort(sortMethods[seletedSorting].fun);
-        setMovieList(list);
-        console.log(list);
-      }
-
+      const res = await axios.get(`/api/movies`);
+      const list = res.data; // received [Array(30),Array(30),Array(30)]
+      
+      list.sort(sortMethods[seletedSorting].fun);
+      setMovieList(list);
     } catch(err) {
       setErrorMsg(err.stack)
     }
@@ -84,7 +70,7 @@ function RankingPage () {
   };
 
   function updateMovie(movie) {
-    const newList = movieList.map((m, i) => m.index === movie.index ? movie : m);
+    const newList = movieList.map(m => m.id === movie.id ? movie : m);
     setMovieList(newList);
   };
 
@@ -134,13 +120,11 @@ function RankingPage () {
               xxl: 6,
             }}
             dataSource={renderList}
+            rowKey='id'
             renderItem={item => (
               <List.Item>
-                <div key={item.index} onClick={() => onClickCard(item)}>
-                  <BoxCard 
-                    key={item.index}
-                    movie={item}
-                  />
+                <div onClick={() => onClickCard(item)}>
+                  <BoxCard movie={item} />
                 </div>
               </List.Item>
             )}
@@ -149,7 +133,7 @@ function RankingPage () {
       </div>
       <Drawer
         title={selectedMovie === null ? "Title" : selectedMovie.title}
-        width={600}
+        width={'80%'}
         placement="right"
         closable={false}
         onClose={onCloseDrawer}
