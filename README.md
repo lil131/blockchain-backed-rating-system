@@ -56,7 +56,7 @@ Movies can be sorted by rating, publish time or popularity.
 ![List Movie](readme/intro-1.jpg)
 
 ### Rate movie
-Click the movie card will open a drawer showing the detailed movie information and allow user to rate the movie.
+Clicking the movie card will open a drawer showing the detailed movie information and allow user to rate the movie.
 ![Rate Movie](readme/intro-2.jpg)
 
 ### Search movie
@@ -67,4 +67,6 @@ Typing title keywords will instantly get the related movies.
 Responsive to different viewsize.
 ![Large Screen](readme/intro-4.jpg)
 ![Middle Screen](readme/intro-5.jpg)
-![Small Screen](readme/intro-6.jpg)
+Mobile screen  |  Mobile screen
+:-------------------------:|:-------------------------:
+![Small Screen](readme/intro-8.png) | ![Small Screen](readme/intro-9.png)
