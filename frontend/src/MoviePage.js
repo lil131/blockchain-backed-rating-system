@@ -63,7 +63,6 @@ function MoviePage(props) {
           <Space>
             Your Rating: 
             <Rate 
-              allowHalf 
               disabled={rating !== null} 
               defaultValue={rating === null ? 0 : rating} 
               onChange={onRatingChange} 
