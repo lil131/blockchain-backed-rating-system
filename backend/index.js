@@ -20,7 +20,7 @@ const {
 app.use(bodyparser.json()); 
 
 // rate movie
-app.post('/api/movie/:id', async (req, res) => {
+app.post('/api/movies/:id', async (req, res) => {
   try {
     let postRes = await swaggerClient.apis.default.rateMovie_post({
       address: CONTRACT_INSTANCE,

@@ -42,7 +42,7 @@ function MoviePage(props) {
     setErrorMsg(null);
 
     try {
-      await axios.post(`/api/movie/${movie.id}`, {
+      await axios.post(`/api/movies/${movie.id}`, {
         rating: rating
       });
 
